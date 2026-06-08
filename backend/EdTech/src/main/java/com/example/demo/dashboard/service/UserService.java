@@ -3,6 +3,7 @@ package com.example.demo.dashboard.service;
 import com.example.demo.dashboard.entity.User;
 import com.example.demo.dashboard.otp.EmailService;
 import com.example.demo.dashboard.otp.OtpService;
+import com.example.demo.dashboard.otp.RecoveryOTPService;
 import com.example.demo.dashboard.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class UserService {
     private final OtpService otpService;
 
     private final EmailService emailService;
+
+    private final RecoveryOTPService recoveryOTPService;
 
     public void login(User user) {
 
@@ -132,6 +135,88 @@ public class UserService {
         } else {
 
             System.out.println("Invalid OTP");
+        }
+    }
+
+
+    public void recovery(String email) {
+        if (userRepository.findByEmail(email) != null) {
+
+            String otp =
+                    recoveryOTPService.generateOtp(email);
+
+            emailService.sendEmail(
+                    email,
+                    "OTP Verification",
+                    "Your OTP is: " + otp
+            );
+
+            System.out.println("OTP generated");
+
+
+        } else {
+            System.out.println("User not found");
+        }
+    }
+
+
+    public void recoveryVerify(
+            String email,
+            String otp
+    ) {
+
+        boolean valid =
+                recoveryOTPService.verifyOtp(
+                        email,
+                        otp
+                );
+
+        if (valid) {
+
+
+            System.out.println("verification successful");
+
+
+
+        } else {
+
+            System.out.println("Invalid OTP");
+        }
+    }
+
+    public void newPassword(
+            String email,
+            String password
+    ) {
+
+        if(!recoveryOTPService.isVerifiedUser(email)) {
+
+            System.out.println("OTP verification required");
+
+            return;
+        }
+
+        User user =
+                userRepository.findByEmail(email);
+
+        if(user != null) {
+
+            user.setPassword(
+                    encoder.encode(password)
+            );
+
+            userRepository.save(user);
+            recoveryOTPService.removeVerifiedUser(email);
+
+            System.out.println(
+                    "Password updated successfully"
+            );
+
+
+
+        } else {
+
+            System.out.println("User not found");
         }
     }
 }

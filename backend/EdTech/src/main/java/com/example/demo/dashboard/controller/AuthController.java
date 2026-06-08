@@ -1,6 +1,8 @@
 package com.example.demo.dashboard.controller;
 
 
+import com.example.demo.dashboard.dto.NewPass;
+import com.example.demo.dashboard.dto.RecoveryRequest;
 import com.example.demo.dashboard.dto.VerifyOtpRequest;
 import com.example.demo.dashboard.entity.User;
 import com.example.demo.dashboard.service.UserService;
@@ -36,6 +38,25 @@ private final UserService userService;
                 request.getEmail(),
                 request.getOtp()
         );
+    }
+
+    @PostMapping("/recovery")
+    public void recovery(
+            @RequestBody RecoveryRequest request
+            ) {
+        userService.recovery(request.getEmail());
+    }
+
+
+
+    @PostMapping("/rverify")
+    public void rverify(@RequestBody VerifyOtpRequest request) {
+        userService.recoveryVerify(request.getEmail(),request.getOtp());
+    }
+
+    @PostMapping("/newpass")
+    public void newpass(@RequestBody NewPass newPass) {
+        userService.newPassword(newPass.getEmail(),newPass.getPassword());
     }
 
 
