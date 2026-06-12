@@ -30,7 +30,7 @@ export class Register implements OnInit {
     private fb: FormBuilder,
     private auth: Auth,
     private router: Router,
-    private cdr: ChangeDetectorRef   // ← Force UI refresh
+    private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -62,7 +62,6 @@ export class Register implements OnInit {
   getFieldError(field: string): string {
     const control = this.registerForm.get(field);
     if (!control || !control.errors) return '';
-
     if (control.errors['required']) return 'This field is required.';
     if (control.errors['email']) return 'Please enter a valid email address.';
     if (control.errors['minlength']) {
@@ -112,7 +111,7 @@ export class Register implements OnInit {
     return classes[score - 1] || '';
   }
 
-  // ── Submit Handlers ──
+  // Submit handlers
   onSubmit(): void {
     this.registerForm.markAllAsTouched();
     if (this.registerForm.invalid) return;
@@ -120,22 +119,16 @@ export class Register implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    console.log('📤 Sending registration request...');
-
     this.auth.register(this.registerForm.value)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
-        next: (response) => {
-          console.log('✅ Registration successful:', response);
+        next: () => {
           this.currentStep = 2;
           this.errorMessage = '';
-          this.cdr.detectChanges();   // Force UI update
+          this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error('❌ Registration failed:', err);
-          this.errorMessage = err?.error?.message
-            || err?.message
-            || 'Registration failed. Please try again.';
+          this.errorMessage = err?.error?.message || 'Registration failed.';
         }
       });
   }
@@ -152,18 +145,18 @@ export class Register implements OnInit {
       otp: this.otpForm.get('otp')?.value
     };
 
-    console.log('📤 Verifying OTP:', payload);
+    console.log('📤 Verifying OTP with payload:', payload);
 
     this.auth.verifyOtp(payload)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (response) => {
-          console.log('✅ OTP Verified Successfully:', response);
+          console.log('✅ OTP Verified Successfully!', response);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
           console.error('❌ OTP Verification Failed:', err);
-          this.errorMessage = err?.error?.message || 'Invalid or expired code.';
+          this.errorMessage = err?.error?.message || 'Invalid or expired code. Please try again.';
         }
       });
   }

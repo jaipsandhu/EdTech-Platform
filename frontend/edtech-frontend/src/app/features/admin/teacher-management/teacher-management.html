@@ -1,0 +1,231 @@
+<div class="teacher-management">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        🎓
+      </div>
+
+      <span class="brand-name">
+        EdTech
+      </span>
+
+    </div>
+
+    <div class="welcome">
+      Welcome back, <strong>Admin</strong>
+    </div>
+
+  </nav>
+
+  <div class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+
+      <div>
+
+        <h1>
+          Teacher Management
+        </h1>
+
+        <p>
+          Manage instructors and teaching staff
+        </p>
+
+      </div>
+
+      <div class="controls">
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by email..."
+          [(ngModel)]="searchTerm"
+          (input)="filterTeachers()"
+        >
+
+        <div class="stats">
+          Total Teachers: {{ teachers.length }}
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Loading -->
+    <div
+      *ngIf="loading"
+      style="text-align:center; padding:120px 20px; color:#666;"
+    >
+
+      <p>
+        Loading teachers...
+      </p>
+
+    </div>
+
+    <!-- Table -->
+    <div
+      *ngIf="!loading && filteredTeachers.length > 0"
+      class="table-container"
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>ID</th>
+
+          <th>Email</th>
+
+          <th>Role</th>
+
+          <th
+            style="text-align:right; width:200px;"
+          >
+            Actions
+          </th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let teacher of filteredTeachers;
+            trackBy: trackById
+          "
+        >
+
+          <td>
+            <strong>
+              #{{ teacher.id }}
+            </strong>
+          </td>
+
+          <td>
+            {{ teacher.email }}
+          </td>
+
+          <td style="text-transform: capitalize;">
+            {{ teacher.role }}
+          </td>
+
+          <td style="text-align:right;">
+
+            <div class="actions">
+
+              <button
+                class="btn-edit"
+                (click)="editTeacher(teacher)"
+              >
+                Edit
+              </button>
+
+              <button
+                class="btn-delete"
+                (click)="deleteTeacher(teacher.id)"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="
+        !loading &&
+        filteredTeachers.length === 0
+      "
+      style="
+        text-align:center;
+        padding:120px 20px;
+        color:#888;
+      "
+    >
+
+      <p>
+        No teachers found.
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- Edit Modal -->
+  <div
+    *ngIf="showEditModal"
+    class="modal"
+    (click)="closeModal()"
+  >
+
+    <div
+      class="modal-content"
+      (click)="$event.stopPropagation()"
+    >
+
+      <h2>
+        Edit Teacher
+      </h2>
+
+      <label>Email</label>
+
+      <input
+        type="email"
+        [(ngModel)]="editEmail"
+      >
+
+      <label>Role</label>
+
+      <select [(ngModel)]="editRole">
+        <option value="STUDENT">Student</option>
+        <option value="TEACHER">Teacher</option>
+      </select>
+
+      <div class="modal-actions">
+
+        <button
+          (click)="closeModal()"
+          style="
+            background:#f1f1f1;
+            color:#333;
+          "
+        >
+          Cancel
+        </button>
+
+        <button
+          (click)="saveEdit()"
+          style="
+            background:#ff6b35;
+            color:white;
+          "
+        >
+          Save Changes
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

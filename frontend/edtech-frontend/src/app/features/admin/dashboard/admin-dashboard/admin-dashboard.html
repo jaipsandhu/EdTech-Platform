@@ -1,0 +1,44 @@
+<div class="admin-dashboard">
+
+  <!-- Modern Floating Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🎓</div>
+      <span class="brand-name">EdTech</span>
+    </div>
+
+    <div class="welcome">
+      Welcome back, <strong>Admin</strong>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Admin Dashboard</h1>
+    <p>Manage your learning platform efficiently</p>
+
+    <div class="cards">
+      <!-- Students -->
+      <div class="card" (click)="goToStudents()">
+        <h2>Students</h2>
+        <p>View, edit and manage all enrolled students</p>
+        <button class="btn-primary">Manage Students</button>
+      </div>
+
+      <!-- Teachers -->
+      <div class="card" (click)="goToTeachers()">
+        <h2>Teachers</h2>
+        <p>Manage instructors and teaching staff</p>
+        <button class="btn-primary">Manage Teachers</button>
+      </div>
+
+      <!-- Content -->
+      <div class="card" (click)="goToContent()">
+        <h2>Content</h2>
+        <p>Manage courses, lessons and learning materials</p>
+        <button class="btn-primary">Manage Content</button>
+      </div>
+    </div>
+  </div>
+
+</div>

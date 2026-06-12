@@ -43,9 +43,9 @@ public class AdminController {
     }
 
     @GetMapping("/teachers")
-    public void getTeachers() {
+    public List<UserListDTO> getTeachers() {
 
-        teacherService.getTeachers();
+        return teacherService.getTeachers();
 
     }
 

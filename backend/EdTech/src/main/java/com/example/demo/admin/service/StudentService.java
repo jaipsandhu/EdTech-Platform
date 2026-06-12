@@ -3,7 +3,7 @@ package com.example.demo.admin.service;
 
 import com.example.demo.admin.dto.EditUserDTO;
 import com.example.demo.admin.dto.UserListDTO;
-import com.example.demo.admin.repository.UserRepository;
+import com.example.demo.admin.repository.AdminRepository;
 import com.example.demo.dashboard.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class StudentService {
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
 
     public List<UserListDTO> getStudents() {
 
         List<User> students =
-                userRepository.findByRole("STUDENT");
+                adminRepository.findByRole("STUDENT");
 
         List<UserListDTO> dtoList =
                 new ArrayList<>();
@@ -32,7 +32,7 @@ public class StudentService {
 
             dto.setId(user.getId());
 
-            dto.setUsername(user.getUsername());
+
 
             dto.setEmail(user.getEmail());
 
@@ -46,7 +46,7 @@ public class StudentService {
 
     public void deleteStudent(Long id) {
 
-        userRepository.deleteById(id);
+        adminRepository.deleteById(id);
         System.out.println("Student Deleted Successfully");
 
     }
@@ -57,14 +57,14 @@ public class StudentService {
     ) {
 
         User user =
-                userRepository.findById(id)
+                adminRepository.findById(id)
                         .orElseThrow();
 
         user.setEmail(dto.getEmail());
 
         user.setRole(dto.getRole());
 
-        userRepository.save(user);
+        adminRepository.save(user);
 
     }
 

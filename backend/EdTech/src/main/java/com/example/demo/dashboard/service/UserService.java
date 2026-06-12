@@ -6,14 +6,30 @@ import com.example.demo.dashboard.otp.OtpService;
 import com.example.demo.dashboard.otp.RecoveryOTPService;
 import com.example.demo.dashboard.repository.UserRepository;
 
+import com.example.demo.dashboard.config.JwtUtil;
+
+import com.example.demo.dashboard.dto.LoginRequestDTO;
+import com.example.demo.dashboard.dto.LoginResponseDTO;
+
+import org.springframework.security.authentication.AuthenticationManager;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private final AuthenticationManager
+            authenticationManager;
+
+    private final JwtUtil jwtUtil;
 
     private final PasswordEncoder encoder;
 
@@ -25,34 +41,36 @@ public class UserService {
 
     private final RecoveryOTPService recoveryOTPService;
 
-    public void login(User user) {
+    public LoginResponseDTO login(
+            LoginRequestDTO dto
+    ) {
 
-        User dbUser =
+        authenticationManager.authenticate(
+
+                new UsernamePasswordAuthenticationToken(
+
+                        dto.getEmail(),
+
+                        dto.getPassword()
+                )
+        );
+
+        User user =
                 userRepository.findByEmail(
+                        dto.getEmail()
+                );
+
+        String token =
+                jwtUtil.generateToken(
                         user.getEmail()
                 );
 
-        if (dbUser == null) {
+        return new LoginResponseDTO(
 
-            System.out.println("User not found");
+                token,
 
-            return;
-        }
-
-        boolean valid =
-                encoder.matches(
-                        user.getPassword(),
-                        dbUser.getPassword()
-                );
-
-        if (valid) {
-
-            System.out.println("Login successful");
-
-        } else {
-
-            System.out.println("Invalid password");
-        }
+                user.getRole()
+        );
     }
 
     public void register(User user) {

@@ -1,9 +1,7 @@
 package com.example.demo.dashboard.controller;
 
 
-import com.example.demo.dashboard.dto.NewPass;
-import com.example.demo.dashboard.dto.RecoveryRequest;
-import com.example.demo.dashboard.dto.VerifyOtpRequest;
+import com.example.demo.dashboard.dto.*;
 import com.example.demo.dashboard.entity.User;
 import com.example.demo.dashboard.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +18,11 @@ public class AuthController {
 private final UserService userService;
 
     @PostMapping("/signin")
-    public void login(@RequestBody User user) {
-        userService.login(user);
+    public LoginResponseDTO login(
+            @RequestBody LoginRequestDTO dto
+    ) {
+
+        return userService.login(dto);
     }
 
     @PostMapping("/register")
