@@ -15,6 +15,8 @@ public class ContentResponseDTO {
 
     private String fileUrl;
 
+    private String uploadedBy;
+
     private ContentType contentType;
 
     private boolean active;

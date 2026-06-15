@@ -35,8 +35,6 @@ public class Content {
 
     private String uploadedBy;
 
-    private String uploadedByRole;
-
     private boolean active = true;
 
     private LocalDateTime createdAt =

@@ -2,26 +2,48 @@
 
   <!-- Navbar -->
   <nav class="navbar">
+
     <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
+
+      <div class="brand-icon">
+        🎓
+      </div>
+
+      <span class="brand-name">
+        EdTech
+      </span>
+
     </div>
 
     <div class="welcome">
-      Welcome back, <strong>Admin</strong>
+
+      <div class="welcome-text">
+        Welcome back,
+        <strong>Teacher</strong>
+      </div>
+
+      <div class="teacher-email">
+        {{ loggedInEmail }}
+      </div>
+
     </div>
+
   </nav>
 
   <div class="main-content">
 
-    <!-- Header -->
     <div class="page-header">
 
       <div>
-        <h1>Content Management</h1>
+
+        <h1>
+          Teacher Dashboard
+        </h1>
+
         <p>
-          Manage courses, lessons and learning materials
+          Manage your uploaded content
         </p>
+
       </div>
 
       <div class="controls">
@@ -30,7 +52,7 @@
           class="btn-upload"
           (click)="openUploadModal()"
         >
-          + Upload New Content
+          + Upload Content
         </button>
 
         <input
@@ -55,7 +77,9 @@
       "
     >
 
-      <p>Loading content...</p>
+      <p>
+        Loading content...
+      </p>
 
     </div>
 
@@ -99,33 +123,20 @@
           "
         >
 
-          <!-- TITLE -->
           <td>
             <strong>
               {{ content.title }}
             </strong>
           </td>
 
-          <!-- UPLOADED BY -->
           <td>
-
-            <span
-              style="
-                font-weight:600;
-                color:#444;
-              "
-            >
-              {{ content.uploadedBy || 'N/A' }}
-            </span>
-
+            {{ content.uploadedBy }}
           </td>
 
-          <!-- TYPE -->
           <td>
             {{ content.contentType }}
           </td>
 
-          <!-- STATUS -->
           <td>
 
             <span
@@ -143,12 +154,10 @@
 
           </td>
 
-          <!-- ACTIONS -->
           <td style="text-align:right;">
 
             <div class="actions">
 
-              <!-- VIEW -->
               <button
                 class="btn-view"
                 (click)="viewContent(content.fileUrl)"
@@ -156,7 +165,6 @@
                 View
               </button>
 
-              <!-- ACTIVATE -->
               <button
                 class="btn-activate"
                 *ngIf="!content.active"
@@ -165,7 +173,6 @@
                 Activate
               </button>
 
-              <!-- DEACTIVATE -->
               <button
                 class="btn-deactivate"
                 *ngIf="content.active"
@@ -174,7 +181,6 @@
                 Deactivate
               </button>
 
-              <!-- DELETE -->
               <button
                 class="btn-delete"
                 (click)="deleteContent(content.id)"
@@ -207,7 +213,9 @@
       "
     >
 
-      <p>No content found.</p>
+      <p>
+        No content found.
+      </p>
 
     </div>
 
@@ -225,14 +233,15 @@
       (click)="$event.stopPropagation()"
     >
 
-      <h2>Upload New Content</h2>
+      <h2>
+        Upload New Content
+      </h2>
 
       <label>Title</label>
 
       <input
         type="text"
         [(ngModel)]="uploadTitle"
-        placeholder="Content Title"
       >
 
       <label>Subject</label>
@@ -240,7 +249,6 @@
       <input
         type="text"
         [(ngModel)]="uploadSubject"
-        placeholder="e.g. Mathematics"
       >
 
       <label>Description</label>
@@ -248,15 +256,16 @@
       <textarea
         [(ngModel)]="uploadDescription"
         rows="3"
-        placeholder="Brief description"
       ></textarea>
 
       <label>Content Type</label>
 
-      <select [(ngModel)]="uploadContentType">
+      <select
+        [(ngModel)]="uploadContentType"
+      >
 
         <option value="VIDEO">
-          Video
+          VIDEO
         </option>
 
         <option value="PDF">
@@ -264,7 +273,7 @@
         </option>
 
         <option value="IMAGE">
-          Image
+          IMAGE
         </option>
 
       </select>
@@ -274,30 +283,20 @@
       <input
         type="file"
         (change)="onFileSelected($event)"
-        accept="*/*"
       >
 
       <div class="modal-actions">
 
         <button
           (click)="closeUploadModal()"
-          style="
-            background:#f1f1f1;
-            color:#333;
-          "
         >
           Cancel
         </button>
 
         <button
           (click)="uploadContent()"
-          [disabled]="!selectedFile"
-          style="
-            background:#ff6b35;
-            color:white;
-          "
         >
-          Upload Content
+          Upload
         </button>
 
       </div>

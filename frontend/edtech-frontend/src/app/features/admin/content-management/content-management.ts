@@ -6,6 +6,7 @@ import { Auth } from '../../../core/services/auth';
 interface Content {
   id: number;
   title: string;
+  uploadedBy: string;
   contentType: string;
   active: boolean;
   fileUrl?: string;
@@ -47,6 +48,7 @@ export class ContentManagement implements OnInit {
 
     this.auth.getAllContent().subscribe({
       next: (data: any) => {
+        console.log('✅ Content received:', data);
         this.contents = Array.isArray(data) ? data : [];
         this.filteredContents = [...this.contents];
         this.loading = false;
@@ -106,74 +108,43 @@ export class ContentManagement implements OnInit {
   }
 
   activateContent(id: number): void {
-
-    this.auth.activateContent(id)
-      .subscribe({
-
-        next: () => {
-
-          this.loadContent();
-
-        },
-
-        error: (err) => {
-
-          console.error(err);
-
-          alert('Failed to activate');
-
-        }
-      });
+    this.auth.activateContent(id).subscribe({
+      next: () => this.loadContent(),
+      error: (err) => alert('Failed to activate')
+    });
   }
 
   deactivateContent(id: number): void {
-
-    this.auth.deactivateContent(id)
-      .subscribe({
-
-        next: () => {
-
-          this.loadContent();
-
-        },
-
-        error: (err) => {
-
-          console.error(err);
-
-          alert('Failed to deactivate');
-
-        }
-      });
+    this.auth.deactivateContent(id).subscribe({
+      next: () => this.loadContent(),
+      error: (err) => alert('Failed to deactivate')
+    });
   }
 
   deleteContent(id: number): void {
+    if (!confirm('Delete this content?')) return;
 
-    if (!confirm('Delete this content?')) {
+    this.auth.deleteContent(id).subscribe({
+      next: () => this.loadContent(),
+      error: (err) => alert('Failed to delete')
+    });
+  }
+
+  trackById(index: number, content: Content): number {
+    return content.id;
+  }
+
+  viewContent(url?: string): void {
+
+    if (!url) {
 
       return;
 
     }
 
-    this.auth.deleteContent(id)
-      .subscribe({
-
-        next: () => {
-
-          this.loadContent();
-
-        },
-
-        error: (err) => {
-
-          console.error(err);
-
-          alert('Failed to delete');
-
-        }
-      });
-  }
-  trackById(index: number, content: Content): number {
-    return content.id;
+    window.open(url, '_blank');
   }
 }
+
+
+

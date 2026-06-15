@@ -9,6 +9,8 @@ import com.example.demo.content.repository.ContentRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +66,17 @@ public class ContentService {
 
         content.setActive(true);
 
+        Authentication authentication =
+
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email =
+                authentication.getName();
+
+        content.setUploadedBy(email);
+
 
         contentRepository.save(content);
     }
@@ -83,6 +96,10 @@ public class ContentService {
                     new ContentResponseDTO();
 
             dto.setId(content.getId());
+
+            dto.setUploadedBy(
+                    content.getUploadedBy()
+            );
 
             dto.setTitle(content.getTitle());
 
@@ -119,6 +136,10 @@ public class ContentService {
             dto.setId(content.getId());
 
             dto.setTitle(content.getTitle());
+
+            dto.setUploadedBy(
+                    content.getUploadedBy()
+            );
 
             dto.setFileUrl(content.getFileUrl());
 

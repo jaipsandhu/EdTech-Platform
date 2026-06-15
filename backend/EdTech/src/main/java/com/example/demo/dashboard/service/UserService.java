@@ -66,10 +66,9 @@ public class UserService {
                 );
 
         return new LoginResponseDTO(
-
                 token,
-
-                user.getRole()
+                user.getRole(),
+                user.getEmail()
         );
     }
 

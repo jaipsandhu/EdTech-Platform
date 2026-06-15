@@ -9,6 +9,8 @@ import { StudentManagement } from './features/admin/student-management/student-m
 import { TeacherManagement } from './features/admin/teacher-management/teacher-management';
 import { ContentManagement } from './features/admin/content-management/content-management';
 
+import { TeacherDashboard } from './features/teacher/teacher-dashboard/teacher-dashboard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -16,41 +18,18 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
 
-  {
-    path: 'signin',
-    component: Signin
-  },
-
-  {
-    path: 'register',
-    component: Register
-  },
-
-  {
-    path: 'forgot-password',
-    component: ForgotPassword
-  },
+  { path: 'signin', component: Signin },
+  { path: 'register', component: Register },
+  { path: 'forgot-password', component: ForgotPassword },
 
   // Admin Routes
-  {
-    path: 'admin',
-    component: AdminDashboard
-  },
+  { path: 'admin', component: AdminDashboard },
+  { path: 'admin/students', component: StudentManagement },
+  { path: 'admin/teachers', component: TeacherManagement },
+  { path: 'admin/content', component: ContentManagement },
 
-  {
-    path: 'admin/students',
-    component: StudentManagement
-  },
-
-  {
-    path: 'admin/teachers',
-    component: TeacherManagement
-  },
-
-  {
-    path: 'admin/content',
-    component: ContentManagement
-  },
+  // Teacher Routes
+  { path: 'teacher', component: TeacherDashboard },
 
   // Fallback route
   {

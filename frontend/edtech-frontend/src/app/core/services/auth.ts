@@ -53,6 +53,10 @@ export class Auth {
           'role',
           response.role
         );
+        localStorage.setItem(
+          'email',
+          response.email
+        );
 
         console.log(
           'TOKEN SAVED:',
@@ -327,6 +331,61 @@ export class Auth {
 
       this.getAuthHeaders()
 
+    );
+  }
+
+  getTeacherContent() {
+
+    return this.http.get(
+
+      'http://localhost:8080/teacher',
+
+      this.getAuthHeaders()
+    );
+  }
+
+  activateTeacherContent(id: number) {
+
+    return this.http.put(
+
+      `http://localhost:8080/teacher/activate/${id}`,
+
+      {},
+
+      this.getAuthHeaders()
+    );
+  }
+
+  deactivateTeacherContent(id: number) {
+
+    return this.http.put(
+
+      `http://localhost:8080/teacher/deactivate/${id}`,
+
+      {},
+
+      this.getAuthHeaders()
+    );
+  }
+
+  deleteTeacherContent(id: number) {
+
+    return this.http.delete(
+
+      `http://localhost:8080/teacher/${id}`,
+
+      this.getAuthHeaders()
+    );
+  }
+  uploadTeacherContent(formData: FormData) {
+
+    return this.http.post(
+
+      'http://localhost:8080/teacher/upload',
+
+      formData,
+
+      this.getAuthHeaders()
     );
   }
 
