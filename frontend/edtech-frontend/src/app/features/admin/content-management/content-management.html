@@ -1,0 +1,108 @@
+<div class="content-management">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon">🎓</div>
+      <span class="brand-name">EdTech</span>
+    </div>
+    <div class="welcome">
+      Welcome back, <strong>Admin</strong>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>Content Management</h1>
+        <p>Manage courses, lessons and learning materials</p>
+      </div>
+
+      <div class="controls">
+        <button class="btn-upload" (click)="openUploadModal()">
+          + Upload New Content
+        </button>
+
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search content..."
+          [(ngModel)]="searchTerm"
+          (input)="filterContent()">
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" style="text-align: center; padding: 120px 20px; color: #666;">
+      <p>Loading content...</p>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading && filteredContents.length > 0" class="table-container">
+      <table>
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let content of filteredContents; trackBy: trackById">
+          <td><strong>{{ content.title }}</strong></td>
+          <td>{{ content.contentType }}</td>
+          <td>
+              <span [class.status-active]="content.active" [class.status-inactive]="!content.active">
+                {{ content.active ? 'Active' : 'Inactive' }}
+              </span>
+          </td>
+          <td style="text-align: right;">
+            <div class="actions">
+              <button class="btn-activate" *ngIf="!content.active" (click)="activateContent(content.id)">Activate</button>
+              <button class="btn-deactivate" *ngIf="content.active" (click)="deactivateContent(content.id)">Deactivate</button>
+              <button class="btn-delete" (click)="deleteContent(content.id)">Delete</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && filteredContents.length === 0" style="text-align: center; padding: 120px 20px; color: #888;">
+      <p>No content found.</p>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div *ngIf="showUploadModal" class="modal" (click)="closeUploadModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Upload New Content</h2>
+
+      <label>Title</label>
+      <input type="text" [(ngModel)]="uploadTitle" placeholder="Content Title">
+
+      <label>Subject</label>
+      <input type="text" [(ngModel)]="uploadSubject" placeholder="e.g. Mathematics">
+
+      <label>Description</label>
+      <textarea [(ngModel)]="uploadDescription" rows="3" placeholder="Brief description"></textarea>
+
+      <label>Content Type</label>
+      <select [(ngModel)]="uploadContentType">
+        <option value="VIDEO">Video</option>
+        <option value="PDF">PDF</option>
+        <option value="IMAGE">Image</option>
+      </select>
+
+      <label>Upload File</label>
+      <input type="file" (change)="onFileSelected($event)" accept="*/*">
+
+      <div class="modal-actions">
+        <button (click)="closeUploadModal()" style="background:#f1f1f1; color:#333;">Cancel</button>
+        <button (click)="uploadContent()" [disabled]="!selectedFile" style="background:#ff6b35; color:white;">Upload Content</button>
+      </div>
+    </div>
+  </div>
+</div>

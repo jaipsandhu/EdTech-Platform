@@ -1,19 +1,15 @@
 import { Routes } from '@angular/router';
 
 import { Signin } from './features/auth/signin/signin';
-
 import { Register } from './features/auth/register/register';
-
 import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
 
 import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
-
 import { StudentManagement } from './features/admin/student-management/student-management';
-
 import { TeacherManagement } from './features/admin/teacher-management/teacher-management';
+import { ContentManagement } from './features/admin/content-management/content-management';
 
 export const routes: Routes = [
-
   {
     path: '',
     redirectTo: 'signin',
@@ -35,6 +31,7 @@ export const routes: Routes = [
     component: ForgotPassword
   },
 
+  // Admin Routes
   {
     path: 'admin',
     component: AdminDashboard
@@ -50,6 +47,14 @@ export const routes: Routes = [
     component: TeacherManagement
   },
 
+  {
+    path: 'admin/content',
+    component: ContentManagement
+  },
 
-
+  // Fallback route
+  {
+    path: '**',
+    redirectTo: 'signin'
+  }
 ];

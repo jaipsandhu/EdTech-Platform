@@ -260,4 +260,74 @@ export class Auth {
     );
   }
 
+
+  getAllContent() {
+
+    return this.http.get<any[]>(
+
+      `${this.adminUrl}/content`,
+
+      this.getAuthHeaders()
+
+    ).pipe(
+
+      tap((data) => {
+
+        console.log(
+          'CONTENT RESPONSE:',
+          data
+        );
+
+      })
+
+    );
+  }
+
+  activateContent(id: number) {
+
+    return this.http.put(
+
+      `${this.adminUrl}/content/activate/${id}`,
+
+      {},
+
+      this.getAuthHeaders()
+    );
+  }
+
+  deactivateContent(id: number) {
+
+    return this.http.put(
+
+      `${this.adminUrl}/content/deactivate/${id}`,
+
+      {},
+
+      this.getAuthHeaders()
+    );
+  }
+
+  deleteContent(id: number) {
+
+    return this.http.delete(
+
+      `${this.adminUrl}/content/${id}`,
+
+      this.getAuthHeaders()
+    );
+  }
+
+  uploadContent(formData: FormData) {
+
+    return this.http.post(
+
+      `${this.adminUrl}/content/upload`,
+
+      formData,
+
+      this.getAuthHeaders()
+
+    );
+  }
+
 }
