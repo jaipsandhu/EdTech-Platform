@@ -1,73 +1,25 @@
-package com.example.demo.content.service;
+package com.example.demo.admin.service;
 
 import com.example.demo.content.dto.ContentResponseDTO;
-import com.example.demo.content.dto.ContentUploadDTO;
-
 import com.example.demo.content.entity.Content;
-
 import com.example.demo.content.repository.ContentRepository;
+import com.example.demo.content.service.S3Service;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+
 @RequiredArgsConstructor
-public class ContentService {
+@Service
+public class ContentAdminService {
 
     private final ContentRepository contentRepository;
 
     private final S3Service s3Service;
-
-
-    public void uploadContent(
-
-            MultipartFile file,
-
-            ContentUploadDTO dto
-
-    ) throws IOException {
-
-      String fileUrl =
-                s3Service.uploadFile(file);
-
-
-        Content content =
-                new Content();
-
-
-        content.setTitle(
-                dto.getTitle()
-        );
-
-        content.setSubject(
-                dto.getSubject()
-        );
-
-        content.setDescription(
-                dto.getDescription()
-        );
-
-        content.setContentType(
-                dto.getContentType()
-        );
-
-        content.setFileUrl(fileUrl);
-
-
-        content.setActive(true);
-
-
-        contentRepository.save(content);
-    }
-
 
     public List<ContentResponseDTO> getAllContent() {
 
@@ -103,41 +55,7 @@ public class ContentService {
     }
 
 
-    public List<ContentResponseDTO> getActiveContent() {
-
-        List<Content> contentList =
-                contentRepository.findByActiveTrue();
-
-        List<ContentResponseDTO> dtoList =
-                new ArrayList<>();
-
-        for(Content content : contentList) {
-
-            ContentResponseDTO dto =
-                    new ContentResponseDTO();
-
-            dto.setId(content.getId());
-
-            dto.setTitle(content.getTitle());
-
-            dto.setFileUrl(content.getFileUrl());
-
-            dto.setContentType(
-                    content.getContentType()
-            );
-
-            dto.setActive(
-                    content.isActive()
-            );
-
-            dtoList.add(dto);
-        }
-
-        return dtoList;
-    }
-
-
-    public void activate(Long id){
+    public void activateContent(Long id) {
 
         Content content =
                 contentRepository
@@ -149,7 +67,8 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-    public void deactivate(Long id){
+
+    public void deactivateContent(Long id) {
 
         Content content =
                 contentRepository
@@ -161,14 +80,13 @@ public class ContentService {
         contentRepository.save(content);
     }
 
-
-
     public void deleteContent(Long id) {
 
         Content content =
                 contentRepository
                         .findById(id)
                         .orElseThrow();
+
 
         String fileUrl =
                 content.getFileUrl();

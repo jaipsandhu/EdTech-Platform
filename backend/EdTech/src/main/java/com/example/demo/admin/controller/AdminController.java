@@ -3,10 +3,22 @@ package com.example.demo.admin.controller;
 
 import com.example.demo.admin.dto.EditUserDTO;
 import com.example.demo.admin.dto.UserListDTO;
-import com.example.demo.admin.service.StudentService;
-import com.example.demo.admin.service.TeacherService;
+import com.example.demo.admin.service.StudentAdminService;
+import com.example.demo.admin.service.TeacherAdminService;
+import com.example.demo.content.entity.ContentType;
+import com.example.demo.content.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.admin.service.ContentAdminService;
+
+import com.example.demo.content.dto.ContentResponseDTO;
+import com.example.demo.content.dto.ContentUploadDTO;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
 
 import java.util.List;
 
@@ -14,12 +26,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
-    private final StudentService studentService;
-    private final TeacherService teacherService;
+    private final StudentAdminService studentAdminService;
+    private final TeacherAdminService teacherAdminService;
+    private final ContentService contentService;
 
     @GetMapping("/students")
     public List<UserListDTO> getStudents(){
-        return studentService.getStudents();
+        return studentAdminService.getStudents();
     }
 
 
@@ -28,7 +41,7 @@ public class AdminController {
             @PathVariable Long id
     ) {
 
-        studentService.deleteStudent(id);
+        studentAdminService.deleteStudent(id);
 
     }
 
@@ -38,14 +51,14 @@ public class AdminController {
             @RequestBody EditUserDTO dto
     ) {
 
-        studentService.editStudent(id, dto);
+        studentAdminService.editStudent(id, dto);
 
     }
 
     @GetMapping("/teachers")
     public List<UserListDTO> getTeachers() {
 
-        return teacherService.getTeachers();
+        return teacherAdminService.getTeachers();
 
     }
 
@@ -55,7 +68,7 @@ public class AdminController {
             @PathVariable Long id
     ) {
 
-        teacherService.deleteTeacher(id);
+        teacherAdminService.deleteTeacher(id);
 
     }
 
@@ -65,9 +78,83 @@ public class AdminController {
             @RequestBody EditUserDTO dto
     ) {
 
-        teacherService.editTeacher(id, dto);
+        teacherAdminService.editTeacher(id, dto);
 
     }
+
+
+    @GetMapping("/content")
+    public List<ContentResponseDTO> getAllContent() {
+
+        return contentService.getAllContent();
+    }
+
+
+    @PostMapping("/content/upload")
+    public void uploadContent(
+
+            @RequestParam("file")
+            MultipartFile file,
+
+            @RequestParam("title")
+            String title,
+
+            @RequestParam("subject")
+            String subject,
+
+            @RequestParam("description")
+            String description,
+
+            @RequestParam("contentType")
+            String contentType
+
+    ) throws IOException {
+
+        ContentUploadDTO dto =
+                new ContentUploadDTO();
+
+        dto.setTitle(title);
+
+        dto.setSubject(subject);
+
+        dto.setDescription(description);
+
+        dto.setContentType(
+                ContentType.valueOf(contentType)
+        );
+
+        contentService.uploadContent(
+                file,
+                dto
+        );
+    }
+
+    @DeleteMapping("/content/{id}")
+    public void deleteContent(
+            @PathVariable Long id
+    ) {
+
+        contentService.deleteContent(id);
+    }
+
+
+    @PutMapping("/content/activate/{id}")
+    public void activateContent(
+            @PathVariable Long id
+    ) {
+
+        contentService.activate(id);
+    }
+
+
+    @PutMapping("/content/deactivate/{id}")
+    public void deactivateContent(
+            @PathVariable Long id
+    ) {
+
+        contentService.deactivate(id);
+    }
+    
 
 
 
