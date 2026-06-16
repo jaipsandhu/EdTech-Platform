@@ -10,7 +10,8 @@ import { TeacherManagement } from './features/admin/teacher-management/teacher-m
 import { ContentManagement } from './features/admin/content-management/content-management';
 
 import { TeacherDashboard } from './features/teacher/teacher-dashboard/teacher-dashboard';
-
+import { StudentDashboard }
+  from './features/student/student-dashboard/student-dashboard';
 export const routes: Routes = [
   {
     path: '',
@@ -31,9 +32,14 @@ export const routes: Routes = [
   // Teacher Routes
   { path: 'teacher', component: TeacherDashboard },
 
-  // Fallback route
+
+
+  // Student Routes
+  { path: 'student', component: StudentDashboard },
+
+// Fallback route
   {
     path: '**',
     redirectTo: 'signin'
-  }
+  },
 ];

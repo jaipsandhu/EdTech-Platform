@@ -6,6 +6,8 @@ import com.example.demo.notes.repository.NotesRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,9 +30,16 @@ public class NotesService {
                 dto.getTitle()
         );
 
-        note.setEmail(
-                dto.getEmail()
-        );
+        Authentication authentication =
+
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        String email =
+                authentication.getName();
+
+        note.setEmail(email);
 
         note.setContent(
                 dto.getContent()
@@ -50,10 +59,7 @@ public class NotesService {
     ) {
 
         return notesRepository
-                .findByContentIdAndEmail(
-                        contentId,
-                        email
-                );
+                .findByContentId(contentId);
     }
 
 
@@ -78,7 +84,7 @@ public class NotesService {
         notesRepository.save(note);
     }
 
-    
+
     public void deleteNote(
             Long id
     ) {

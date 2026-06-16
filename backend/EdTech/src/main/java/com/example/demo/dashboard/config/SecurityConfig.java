@@ -116,23 +116,34 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Public endpoints
                         .requestMatchers(
                                 "/home/**",
                                 "/auth/**"
                         ).permitAll()
 
+                        // Admin only
                         .requestMatchers(
                                 "/admin/**"
                         ).hasRole("ADMIN")
 
+                        // Teacher only
+                        .requestMatchers(
+                                "/teacher/**"
+                        ).hasRole("TEACHER")
+
+                        // Student only
+                        .requestMatchers(
+                                "/student/**"
+                        ).hasRole("STUDENT")
+
+                        // All other endpoints require login
                         .anyRequest()
                         .authenticated()
                 )
 
                 .addFilterBefore(
-
                         jwtFilter,
-
                         UsernamePasswordAuthenticationFilter.class
                 )
 

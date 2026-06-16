@@ -9,4 +9,8 @@ public interface NotesRepository extends JpaRepository<Notes, Long> {
     List<Notes> findByContentIdAndEmail(
             Long contentId, String email
     );
+
+    List<Notes> findByContentId(
+            Long contentId
+    );
 }

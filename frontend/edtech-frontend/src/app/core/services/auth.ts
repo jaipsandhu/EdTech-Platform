@@ -389,4 +389,64 @@ export class Auth {
     );
   }
 
+
+  // Student Routes
+  getStudentContent() {
+
+    return this.http.get(
+
+      'http://localhost:8080/student',
+
+      this.getAuthHeaders()
+    );
+  }
+
+  getNotes(contentId: number) {
+
+    return this.http.get(
+
+      `http://localhost:8080/student/notes/${contentId}`,
+
+      this.getAuthHeaders()
+    );
+  }
+
+  createNote(payload: any) {
+
+    return this.http.post(
+
+      'http://localhost:8080/student/notes',
+
+      payload,
+
+      this.getAuthHeaders()
+    );
+  }
+
+  deleteNote(noteId: number) {
+
+    return this.http.delete(
+
+      `http://localhost:8080/student/notes/${noteId}`,
+
+      this.getAuthHeaders()
+    );
+  }
+
+  updateNote(
+    id: number,
+    payload: any
+  ) {
+
+    return this.http.put(
+
+      `http://localhost:8080/student/notes/${id}`,
+
+      payload,
+
+      this.getAuthHeaders()
+
+    );
+  }
+
 }
