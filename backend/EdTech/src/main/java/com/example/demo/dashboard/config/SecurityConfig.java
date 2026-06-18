@@ -119,7 +119,9 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers(
                                 "/home/**",
-                                "/auth/**"
+                                "/auth/**",
+                                "/chat/**"
+                                        //remove chat later
                         ).permitAll()
 
                         // Admin only

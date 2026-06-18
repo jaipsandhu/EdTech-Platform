@@ -46,11 +46,12 @@ public class MemoConfig {
                 .host("localhost")
                 .port(5432)
                 .database("edtech")
-                .user(username)
-                .password(password)
+                .user("postgres")
+                .password("postgres")
                 .table("my_embeddings")
-                .dimension(embeddingModel.dimension())
+                .dimension(768)
                 .createTable(true)
                 .build();
+
     }
 }

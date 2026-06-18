@@ -19,7 +19,7 @@ public class OllamaConfig {
             "deepseek-r1:1.5b";
 
     private static final String EMBEDDING_MODEL =
-            "nomic-embed-text";
+            "nomic-embed-text:latest";
 
     @Bean
     public ChatLanguageModel chatLanguageModel() {
