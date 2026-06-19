@@ -433,6 +433,8 @@ export class Auth {
     );
   }
 
+
+
   updateNote(
     id: number,
     payload: any

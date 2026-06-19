@@ -1,119 +1,260 @@
 <div class="student-dashboard">
 
-  <!-- Navbar -->
   <nav class="navbar">
+
     <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
+      EdTech
     </div>
-    <div class="welcome">
-      Welcome back, <strong>Student</strong>
+
+    <div class="nav-menu">
+
+      <button class="nav-item active">
+        Learning
+      </button>
+
+      <button class="nav-item">
+        Courses
+      </button>
+
+      <button class="nav-item">
+        Notes
+      </button>
+
+      <button class="nav-item">
+        AI Assistant
+      </button>
+
     </div>
+
+    <div class="nav-actions">
+
+      <span class="lang">
+        IN
+      </span>
+
+      <button class="contact-btn">
+        Student
+      </button>
+
+    </div>
+
   </nav>
 
-  <div class="main-layout">
-    <!-- Main Content -->
-    <div class="content-area">
-      <div class="page-header">
-        <div>
-          <h1>Student Dashboard</h1>
-          <p>Browse and learn from available content</p>
-        </div>
+  <section class="hero">
 
-        <div class="controls">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search content..."
-            [(ngModel)]="searchTerm"
-            (input)="filterContents()">
-        </div>
-      </div>
+    <div class="hero-left">
 
-      <!-- Loading -->
-      <div *ngIf="loading" style="text-align: center; padding: 120px 20px; color: #666;">
-        <p>Loading available content...</p>
-      </div>
+      <span class="section-tag">
+        Learning Dashboard
+      </span>
 
-      <!-- Content Table -->
-      <div *ngIf="!loading && filteredContents.length > 0" class="table-container">
-        <table>
-          <thead>
-          <tr>
-            <th>Title</th>
-            <th>Uploaded By</th>
-            <th>Type</th>
-            <th style="text-align: right;">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let content of filteredContents; trackBy: trackById">
-            <td><strong>{{ content.title }}</strong></td>
-            <td>{{ content.uploadedBy || 'N/A' }}</td>
-            <td>{{ content.contentType }}</td>
-            <td style="text-align: right;">
-              <div class="actions">
-                <button class="btn-view" (click)="viewContent(content)">View</button>
-                <button class="btn-notes" (click)="openNotes(content)">Open Notes</button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+      <h1>
+        Together, We
+        <span class="accent">
+          Learn
+        </span>
+        Smarter
+      </h1>
 
-      <!-- Empty State -->
-      <div *ngIf="!loading && filteredContents.length === 0" style="text-align: center; padding: 120px 20px; color: #888;">
-        <p>No content available at the moment.</p>
-      </div>
+      <p>
+        Access educational resources, take notes,
+        and collaborate with your AI learning assistant.
+      </p>
+
     </div>
 
-    <!-- AI Chat Sidebar -->
-    <div class="chat-sidebar">
-      <div class="chat-header">
-        <strong>AI Assistant</strong>
-        <span>Ask anything about your courses</span>
+    <div class="hero-right">
+
+      <div class="stats-card">
+
+        <span>
+          Available Content
+        </span>
+
+        <h3>
+          {{ contents.length }}
+        </h3>
+
       </div>
 
-      <div class="chat-messages">
-        <div *ngFor="let msg of messages" class="message" [class.user]="msg.isUser">
-          {{ msg.text }}
+    </div>
+
+  </section>
+
+  <div class="dashboard-layout">
+
+    <section class="content-section">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search content..."
+        [(ngModel)]="searchTerm"
+        (input)="filterContents()">
+
+      <div
+        *ngIf="!loading"
+        class="content-list">
+
+        <div
+          class="content-card"
+          *ngFor="
+          let content of filteredContents;
+          trackBy: trackById
+        ">
+
+          <div>
+
+            <span class="content-type">
+              {{ content.contentType }}
+            </span>
+
+            <h3>
+              {{ content.title }}
+            </h3>
+
+            <p>
+              Uploaded by {{ content.uploadedBy || 'Faculty' }}
+            </p>
+
+          </div>
+
+          <div class="card-actions">
+
+            <button
+              class="secondary-btn"
+              (click)="openNotes(content)">
+
+              Notes
+
+            </button>
+
+            <button
+              class="primary-btn"
+              (click)="viewContent(content)">
+
+              Open
+
+            </button>
+
+          </div>
+
         </div>
+
+      </div>
+
+    </section>
+
+    <aside class="chat-panel">
+
+      <div class="chat-header">
+
+        <span class="section-tag">
+          AI Assistant
+        </span>
+
+        <h3>
+          Ask Anything
+        </h3>
+
+      </div>
+
+      <div
+        #chatContainer
+        class="chat-messages">
+
+        <div
+          *ngFor="let msg of messages"
+          class="message"
+          [class.user]="msg.isUser">
+
+          {{ msg.text }}
+
+        </div>
+
       </div>
 
       <div class="chat-input">
+
         <input
           type="text"
           [(ngModel)]="chatInput"
           (keyup.enter)="sendMessage()"
-          placeholder="Ask AI anything...">
-        <button (click)="sendMessage()">Send</button>
+          placeholder="Ask a question...">
+
+        <button
+          (click)="sendMessage()">
+
+          Send
+
+        </button>
+
       </div>
-    </div>
+
+    </aside>
+
   </div>
 
-  <!-- Notes Modal -->
-  <div *ngIf="showNotesModal" class="modal" (click)="closeNotesModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>Notes: {{ selectedContent?.title }}</h2>
+  <div
+    *ngIf="showNotesModal"
+    class="modal"
+    (click)="closeNotesModal()">
 
-      <div class="add-note">
-        <input type="text" placeholder="Note Title" [(ngModel)]="newNoteTitle">
-        <textarea placeholder="Write your note here..." rows="4" [(ngModel)]="newNoteContent"></textarea>
-        <button (click)="saveNote()" [disabled]="!newNoteTitle || !newNoteContent">Save Note</button>
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()">
+
+      <span class="section-tag">
+        Notes
+      </span>
+
+      <h2>
+        {{ selectedContent?.title }}
+      </h2>
+
+      <input
+        type="text"
+        placeholder="Note Title"
+        [(ngModel)]="newNoteTitle">
+
+      <textarea
+        rows="5"
+        placeholder="Write your notes..."
+        [(ngModel)]="newNoteContent">
+      </textarea>
+
+      <button
+        class="primary-btn"
+        (click)="saveNote()">
+
+        Save Note
+
+      </button>
+
+      <div
+        class="note-card"
+        *ngFor="let note of notes">
+
+        <h4>
+          {{ note.title }}
+        </h4>
+
+        <p>
+          {{ note.content }}
+        </p>
+
+        <button
+          class="delete-btn"
+          (click)="deleteNote(note.id)">
+
+          Delete
+
+        </button>
+
       </div>
 
-      <div class="notes-list">
-        <div *ngFor="let note of notes" class="note-item">
-          <h4>{{ note.title }}</h4>
-          <p>{{ note.content }}</p>
-          <button class="btn-delete-note" (click)="deleteNote(note.id)">Delete</button>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button (click)="closeNotesModal()">Close</button>
-      </div>
     </div>
+
   </div>
+
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@an
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
+import { timeout } from 'rxjs/operators';
 
 interface Content {
   id: number;
@@ -138,7 +139,6 @@ export class StudentDashboard implements OnInit {
   }
 
   // ── AI Chat ──
-
   sendMessage(): void {
     if (!this.chatInput.trim() || this.isChatLoading) return;
 
@@ -148,17 +148,19 @@ export class StudentDashboard implements OnInit {
     this.isChatLoading = true;
     this.scrollToBottom();
 
-    // placeholder for streaming
     const aiMessage: ChatMessage = { text: '', isUser: false };
     this.messages.push(aiMessage);
 
-    this.auth.chatWithAI(userMessage).subscribe({
+    this.auth.chatWithAI(userMessage).pipe(
+      timeout(180000)   // ← Increase to 3 minutes (180 seconds)
+    ).subscribe({
       next: (chunk: string) => {
-        aiMessage.text += chunk;   // accumulate streamed chunks
+        aiMessage.text += chunk;
         this.cdr.detectChanges();
         this.scrollToBottom();
       },
       error: (err) => {
+        console.error('Chat error:', err);
         aiMessage.text = "Sorry, I'm having trouble responding right now.";
         this.isChatLoading = false;
         this.cdr.detectChanges();

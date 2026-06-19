@@ -1,225 +1,223 @@
 <div class="teacher-management">
 
-  <!-- Navbar -->
   <nav class="navbar">
 
     <div class="brand">
+      EdTech
+    </div>
 
-      <div class="brand-icon">
-        🎓
-      </div>
+    <div class="nav-menu">
 
-      <span class="brand-name">
-        EdTech
-      </span>
+      <button class="nav-item">
+        Dashboard
+      </button>
+
+      <button class="nav-item">
+        Students
+      </button>
+
+      <button class="nav-item active">
+        Teachers
+      </button>
+
+      <button class="nav-item">
+        Content
+      </button>
 
     </div>
 
-    <div class="welcome">
-      Welcome back, <strong>Admin</strong>
+    <div class="nav-actions">
+
+      <span class="lang">
+        IN
+      </span>
+
+      <button class="contact-btn">
+        Admin
+      </button>
+
     </div>
 
   </nav>
 
-  <div class="main-content">
+  <section class="hero">
 
-    <!-- Header -->
-    <div class="page-header">
+    <div class="hero-left">
+
+      <span class="section-tag">
+        Teacher Management
+      </span>
+
+      <h1>
+        Together, We
+        <span class="accent">
+          Empower
+        </span>
+        Educators
+      </h1>
+
+      <p>
+        Manage instructors, teaching access,
+        and academic responsibilities through
+        a centralized administration platform.
+      </p>
+
+    </div>
+
+    <div class="hero-right">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search teacher..."
+        [(ngModel)]="searchTerm"
+        (input)="filterTeachers()">
+
+      <div class="teacher-count">
+
+        <span>Total Teachers</span>
+
+        <h3>
+          {{ teachers.length }}
+        </h3>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    *ngIf="!loading"
+    class="teacher-table">
+
+    <div class="table-header">
+
+      <span>
+        Faculty Directory
+      </span>
+
+      <span>
+        {{ filteredTeachers.length }} Records
+      </span>
+
+    </div>
+
+    <div
+      class="teacher-row"
+      *ngFor="
+      let teacher of filteredTeachers;
+      trackBy: trackById
+    ">
 
       <div>
 
-        <h1>
-          Teacher Management
-        </h1>
+        <h3>
+          {{ teacher.email }}
+        </h3>
 
-        <p>
-          Manage instructors and teaching staff
-        </p>
-
-      </div>
-
-      <div class="controls">
-
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Search by email..."
-          [(ngModel)]="searchTerm"
-          (input)="filterTeachers()"
-        >
-
-        <div class="stats">
-          Total Teachers: {{ teachers.length }}
-        </div>
+        <span>
+          Teacher ID #{{ teacher.id }}
+        </span>
 
       </div>
 
-    </div>
+      <div class="role">
 
-    <!-- Loading -->
-    <div
-      *ngIf="loading"
-      style="text-align:center; padding:120px 20px; color:#666;"
-    >
+        {{ teacher.role }}
 
-      <p>
-        Loading teachers...
-      </p>
+      </div>
 
-    </div>
+      <div class="actions">
 
-    <!-- Table -->
-    <div
-      *ngIf="!loading && filteredTeachers.length > 0"
-      class="table-container"
-    >
+        <button
+          class="action-btn"
+          (click)="editTeacher(teacher)">
+          Edit
+        </button>
 
-      <table>
+        <button
+          class="delete-btn"
+          (click)="deleteTeacher(teacher.id)">
+          Delete
+        </button>
 
-        <thead>
-
-        <tr>
-
-          <th>ID</th>
-
-          <th>Email</th>
-
-          <th>Role</th>
-
-          <th
-            style="text-align:right; width:200px;"
-          >
-            Actions
-          </th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        <tr
-          *ngFor="
-            let teacher of filteredTeachers;
-            trackBy: trackById
-          "
-        >
-
-          <td>
-            <strong>
-              #{{ teacher.id }}
-            </strong>
-          </td>
-
-          <td>
-            {{ teacher.email }}
-          </td>
-
-          <td style="text-transform: capitalize;">
-            {{ teacher.role }}
-          </td>
-
-          <td style="text-align:right;">
-
-            <div class="actions">
-
-              <button
-                class="btn-edit"
-                (click)="editTeacher(teacher)"
-              >
-                Edit
-              </button>
-
-              <button
-                class="btn-delete"
-                (click)="deleteTeacher(teacher.id)"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-        </tbody>
-
-      </table>
+      </div>
 
     </div>
 
-    <!-- Empty State -->
-    <div
-      *ngIf="
-        !loading &&
-        filteredTeachers.length === 0
-      "
-      style="
-        text-align:center;
-        padding:120px 20px;
-        color:#888;
-      "
-    >
+  </section>
 
-      <p>
-        No teachers found.
-      </p>
+  <div
+    *ngIf="loading"
+    class="loading">
 
-    </div>
+    Loading Teachers...
 
   </div>
 
-  <!-- Edit Modal -->
+  <div
+    *ngIf="errorMessage"
+    class="error">
+
+    {{ errorMessage }}
+
+  </div>
+
   <div
     *ngIf="showEditModal"
     class="modal"
-    (click)="closeModal()"
-  >
+    (click)="closeModal()">
 
     <div
-      class="modal-content"
-      (click)="$event.stopPropagation()"
-    >
+      class="modal-card"
+      (click)="$event.stopPropagation()">
+
+      <span class="section-tag">
+        Edit Teacher
+      </span>
 
       <h2>
-        Edit Teacher
+        Update
+        <span class="accent">
+          Teacher
+        </span>
       </h2>
-
-      <label>Email</label>
 
       <input
         type="email"
         [(ngModel)]="editEmail"
-      >
+        placeholder="Email">
 
-      <label>Role</label>
+      <select
+        [(ngModel)]="editRole">
 
-      <select [(ngModel)]="editRole">
-        <option value="STUDENT">Student</option>
-        <option value="TEACHER">Teacher</option>
+        <option value="TEACHER">
+          Teacher
+        </option>
+
+        <option value="STUDENT">
+          Student
+        </option>
+
       </select>
 
       <div class="modal-actions">
 
         <button
-          (click)="closeModal()"
-          style="
-            background:#f1f1f1;
-            color:#333;
-          "
-        >
+          class="secondary-btn"
+          (click)="closeModal()">
+
           Cancel
+
         </button>
 
         <button
-          (click)="saveEdit()"
-          style="
-            background:#ff6b35;
-            color:white;
-          "
-        >
-          Save Changes
+          class="primary-btn"
+          (click)="saveEdit()">
+
+          Save
+
         </button>
 
       </div>

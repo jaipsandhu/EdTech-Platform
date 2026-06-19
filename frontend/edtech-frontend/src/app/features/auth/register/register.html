@@ -1,138 +1,243 @@
-<div class="auth-wrapper">
-  <div class="register-container">
+<div class="register-page">
 
-    <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
-    </div>
+  <div class="register-left">
 
-    <!-- Step progress bar -->
-    <div class="step-bar">
-      <div class="step-dot" [class.active]="currentStep === 1" [class.done]="currentStep > 1"></div>
-      <div class="step-dot" [class.active]="currentStep === 2" [class.done]="currentStep > 2"></div>
-    </div>
-
-    @if(errorMessage) {
-      <div class="error-banner">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        {{ errorMessage }}
-      </div>
-    }
+    <span class="section-label">
+      EdTech Platform
+    </span>
 
     @if(currentStep === 1) {
-      <h1>Create Account</h1>
-      <p class="subtitle">Start your learning journey today.</p>
 
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
-        <div class="field">
-          <label for="reg-email">EMAIL ADDRESS</label>
-          <input
-            id="reg-email"
-            type="email"
-            formControlName="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            [class.input-error]="isFieldInvalid('email')"
-            [class.input-success]="isFieldValid('email')"
-          >
-          @if(isFieldInvalid('email')) {
-            <span class="field-error">{{ getFieldError('email') }}</span>
-          }
-        </div>
+      <h1>
+        Start your
+        <span class="accent">Learning</span>
+        journey.
+      </h1>
 
-        <div class="field">
-          <label for="reg-password">PASSWORD</label>
-          <div class="input-wrap">
-            <input
-              id="reg-password"
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="Minimum 6 characters"
-              autocomplete="new-password"
-              [class.input-error]="isFieldInvalid('password')"
-              [class.input-success]="isFieldValid('password')"
-            >
-            <button type="button" class="toggle-pw" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
-              @if(!showPassword) {
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                </svg>
-              } @else {
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              }
-            </button>
-          </div>
-
-          @if(registerForm.get('password')?.value) {
-            <div class="pw-strength">
-              <div class="strength-bar" [class]="getStrengthClass(0)"></div>
-              <div class="strength-bar" [class]="getStrengthClass(1)"></div>
-              <div class="strength-bar" [class]="getStrengthClass(2)"></div>
-              <div class="strength-bar" [class]="getStrengthClass(3)"></div>
-              <span class="strength-label">{{ strengthLabel }}</span>
-            </div>
-          }
-
-          @if(isFieldInvalid('password')) {
-            <span class="field-error">{{ getFieldError('password') }}</span>
-          }
-        </div>
-
-        <button type="submit" class="btn-primary" [disabled]="isLoading">
-          @if(isLoading) {
-            <div class="spinner"></div>
-            SENDING OTP...
-          } @else {
-            CONTINUE
-          }
-        </button>
-      </form>
-
-      <p class="auth-footer">
-        Already have an account? <a routerLink="/signin">Sign in</a>
+      <p class="description">
+        Create your account and unlock access to intelligent learning,
+        AI-powered assistance, notes, and educational resources.
       </p>
+
     }
 
     @if(currentStep === 2) {
-      <h1>Verify Your Email</h1>
-      <p class="otp-hint">We sent a 6-digit code to <strong>{{ registerForm.get('email')?.value }}</strong></p>
 
-      <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()" novalidate>
-        <div class="field">
-          <label for="reg-otp">ONE-TIME CODE</label>
-          <input
-            id="reg-otp"
-            type="text"
-            inputmode="numeric"
-            formControlName="otp"
-            placeholder="123456"
-            maxlength="6"
-            autocomplete="one-time-code"
-            [class.input-error]="isOtpInvalid()"
-            [class.input-success]="isOtpValid()"
-          >
-          @if(isOtpInvalid()) {
-            <span class="field-error">{{ getOtpError() }}</span>
-          }
-        </div>
+      <h1>
+        Verify your
+        <span class="accent">Email</span>.
+      </h1>
 
-        <button type="submit" class="btn-primary" [disabled]="isLoading">
-          @if(isLoading) {
-            <div class="spinner"></div>
-            VERIFYING...
-          } @else {
-            VERIFY & CREATE ACCOUNT
-          }
-        </button>
-      </form>
+      <p class="description">
+        We've sent a verification code to your email address.
+        Enter the code to complete your registration.
+      </p>
 
-      <a class="back-link" (click)="currentStep = 1" style="cursor:pointer">← Change Email</a>
     }
 
+    <div class="feature-list">
+
+      <div class="feature-item">
+        ✓ AI Learning Assistant
+      </div>
+
+      <div class="feature-item">
+        ✓ Smart Notes & Content
+      </div>
+
+      <div class="feature-item">
+        ✓ Progress Tracking
+      </div>
+
+    </div>
+
   </div>
+
+  <div class="register-right">
+
+    <div class="register-card">
+
+      <div class="progress-indicator">
+        <div
+          class="progress-step"
+          [class.active]="currentStep >= 1">
+        </div>
+
+        <div
+          class="progress-step"
+          [class.active]="currentStep >= 2">
+        </div>
+      </div>
+
+      @if(errorMessage) {
+        <div class="error-banner">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <!-- STEP 1 -->
+
+      @if(currentStep === 1) {
+
+        <h2>Create Account</h2>
+
+        <form
+          [formGroup]="registerForm"
+          (ngSubmit)="onSubmit()">
+
+          <div class="field">
+
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Email Address">
+
+            @if(isFieldInvalid('email')) {
+              <span class="field-error">
+                {{ getFieldError('email') }}
+              </span>
+            }
+
+          </div>
+
+          <div class="field">
+
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Password">
+
+            @if(isFieldInvalid('password')) {
+              <span class="field-error">
+                {{ getFieldError('password') }}
+              </span>
+            }
+
+          </div>
+
+          @if(registerForm.get('password')?.value) {
+
+            <div class="strength-wrapper">
+
+              <div class="strength-bars">
+
+                <div
+                  class="strength-bar"
+                  [class]="getStrengthClass(0)">
+                </div>
+
+                <div
+                  class="strength-bar"
+                  [class]="getStrengthClass(1)">
+                </div>
+
+                <div
+                  class="strength-bar"
+                  [class]="getStrengthClass(2)">
+                </div>
+
+                <div
+                  class="strength-bar"
+                  [class]="getStrengthClass(3)">
+                </div>
+
+              </div>
+
+              <span class="strength-label">
+                {{ strengthLabel }}
+              </span>
+
+            </div>
+
+          }
+
+          <button
+            class="primary-btn"
+            type="submit"
+            [disabled]="isLoading">
+
+            @if(isLoading) {
+              Sending OTP...
+            } @else {
+              Continue
+            }
+
+          </button>
+
+        </form>
+
+        <div class="auth-links">
+
+          <a routerLink="/signin">
+            Already have an account?
+          </a>
+
+        </div>
+
+      }
+
+      <!-- STEP 2 -->
+
+      @if(currentStep === 2) {
+
+        <h2>Email Verification</h2>
+
+        <p class="otp-text">
+          Code sent to
+          <strong>
+            {{ registerForm.get('email')?.value }}
+          </strong>
+        </p>
+
+        <form
+          [formGroup]="otpForm"
+          (ngSubmit)="verifyOtp()">
+
+          <div class="field">
+
+            <input
+              type="text"
+              maxlength="6"
+              formControlName="otp"
+              placeholder="Enter 6-digit code">
+
+            @if(isOtpInvalid()) {
+              <span class="field-error">
+                {{ getOtpError() }}
+              </span>
+            }
+
+          </div>
+
+          <button
+            class="primary-btn"
+            type="submit"
+            [disabled]="isLoading">
+
+            @if(isLoading) {
+              Verifying...
+            } @else {
+              Verify Account
+            }
+
+          </button>
+
+        </form>
+
+        <div class="auth-links">
+
+          <a
+            (click)="currentStep = 1"
+            style="cursor:pointer">
+            Change Email
+          </a>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
 </div>

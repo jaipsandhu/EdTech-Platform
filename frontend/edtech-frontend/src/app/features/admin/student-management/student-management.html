@@ -1,96 +1,232 @@
 <div class="student-management">
 
-  <!-- Navbar -->
   <nav class="navbar">
+
     <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
+      EdTech
     </div>
-    <div class="welcome">
-      Welcome back, <strong>Admin</strong>
+
+    <div class="nav-menu">
+
+      <button class="nav-item">
+        Dashboard
+      </button>
+
+      <button class="nav-item active">
+        Students
+      </button>
+
+      <button class="nav-item">
+        Teachers
+      </button>
+
+      <button class="nav-item">
+        Content
+      </button>
+
     </div>
+
+    <div class="nav-actions">
+
+      <span class="lang">
+        IN
+      </span>
+
+      <button class="contact-btn">
+        Admin
+      </button>
+
+    </div>
+
   </nav>
 
-  <div class="main-content">
-    <div class="page-header">
+  <section class="hero">
+
+    <div class="hero-left">
+
+      <span class="section-tag">
+        Student Management
+      </span>
+
+      <h1>
+        Together, We
+        <span class="accent">
+          Manage
+        </span>
+        Student
+        Success
+      </h1>
+
+      <p>
+        Organize learners, manage access,
+        and maintain educational records
+        through one centralized platform.
+      </p>
+
+    </div>
+
+    <div class="hero-right">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search student..."
+        [(ngModel)]="searchTerm"
+        (input)="filterStudents()">
+
+      <div class="student-count">
+
+        <span>Total Students</span>
+
+        <h3>
+          {{ students.length }}
+        </h3>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    *ngIf="!loading"
+    class="student-table">
+
+    <div class="table-header">
+
+      <span>
+        Student Directory
+      </span>
+
+      <span>
+        {{ filteredStudents.length }} Records
+      </span>
+
+    </div>
+
+    <div
+      class="student-row"
+      *ngFor="
+      let student of filteredStudents;
+      trackBy: trackById
+    ">
+
       <div>
-        <h1>Student Management</h1>
-        <p>Manage enrolled students and platform access</p>
+
+        <h3>
+          {{ student.email }}
+        </h3>
+
+        <span>
+          Student ID #{{ student.id }}
+        </span>
+
       </div>
 
-      <div class="controls">
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Search by email..."
-          [(ngModel)]="searchTerm"
-          (input)="filterStudents()">
-        <div class="stats">Total Students: {{ students.length }}</div>
+      <div class="role">
+
+        {{ student.role }}
+
       </div>
+
+      <div class="actions">
+
+        <button
+          class="action-btn"
+          (click)="editStudent(student)">
+          Edit
+        </button>
+
+        <button
+          class="delete-btn"
+          (click)="deleteStudent(student.id)">
+          Delete
+        </button>
+
+      </div>
+
     </div>
 
-    <!-- Loading -->
-    <div *ngIf="loading" style="text-align: center; padding: 120px 20px; color: #666;">
-      <p>Loading students...</p>
-    </div>
+  </section>
 
-    <!-- Error -->
-    <div *ngIf="errorMessage" style="text-align: center; padding: 60px; color: #e11d48;">
-      {{ errorMessage }}
-    </div>
+  <div
+    *ngIf="loading"
+    class="loading">
 
-    <!-- Table -->
-    <div *ngIf="!loading && filteredStudents.length > 0" class="table-container">
-      <table>
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th style="text-align: right; width: 200px;">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let student of filteredStudents; trackBy: trackById">
-          <td><strong>#{{ student.id }}</strong></td>
-          <td>{{ student.email }}</td>
-          <td style="text-transform: capitalize;">{{ student.role }}</td>
-          <td style="text-align: right;">
-            <div class="actions">
-              <button class="btn-edit" (click)="editStudent(student)">Edit</button>
-              <button class="btn-delete" (click)="deleteStudent(student.id)">Delete</button>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    Loading Students...
 
-    <!-- Empty State -->
-    <div *ngIf="!loading && filteredStudents.length === 0" style="text-align: center; padding: 120px 20px; color: #888;">
-      <p>No students found.</p>
-    </div>
   </div>
 
-  <!-- Edit Modal -->
-  <div *ngIf="showEditModal" class="modal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>Edit Student</h2>
+  <div
+    *ngIf="errorMessage"
+    class="error">
 
-      <label>Email</label>
-      <input type="email" [(ngModel)]="editEmail">
+    {{ errorMessage }}
 
-      <label>Role</label>
-      <select [(ngModel)]="editRole">
-        <option value="STUDENT">Student</option>
-        <option value="TEACHER">Teacher</option>
+  </div>
+
+  <!-- EDIT MODAL -->
+
+  <div
+    *ngIf="showEditModal"
+    class="modal"
+    (click)="closeModal()">
+
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()">
+
+      <span class="section-tag">
+        Edit Student
+      </span>
+
+      <h2>
+        Update
+        <span class="accent">
+          Student
+        </span>
+      </h2>
+
+      <input
+        type="email"
+        [(ngModel)]="editEmail"
+        placeholder="Email">
+
+      <select
+        [(ngModel)]="editRole">
+
+        <option value="STUDENT">
+          Student
+        </option>
+
+        <option value="TEACHER">
+          Teacher
+        </option>
+
       </select>
 
       <div class="modal-actions">
-        <button (click)="closeModal()" style="background:#f1f1f1; color:#333;">Cancel</button>
-        <button (click)="saveEdit()" style="background:#ff6b35; color:white;">Save Changes</button>
+
+        <button
+          class="secondary-btn"
+          (click)="closeModal()">
+
+          Cancel
+
+        </button>
+
+        <button
+          class="primary-btn"
+          (click)="saveEdit()">
+
+          Save
+
+        </button>
+
       </div>
+
     </div>
+
   </div>
 
 </div>

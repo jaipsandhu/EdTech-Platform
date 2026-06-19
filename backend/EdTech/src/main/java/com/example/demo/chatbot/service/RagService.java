@@ -59,7 +59,7 @@ public class RagService {
 
         log.info("Removing all segments ...");
 
-        embeddingStore.removeAll();
+//        embeddingStore.removeAll();
 
         try {
 

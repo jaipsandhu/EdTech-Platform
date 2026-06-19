@@ -1,44 +1,176 @@
 <div class="admin-dashboard">
 
-  <!-- Modern Floating Navbar -->
   <nav class="navbar">
+
     <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
+      EdTech
     </div>
 
-    <div class="welcome">
-      Welcome back, <strong>Admin</strong>
+    <div class="nav-menu">
+
+      <button class="nav-item active">
+        Dashboard
+      </button>
+
+      <button class="nav-item">
+        Students
+      </button>
+
+      <button class="nav-item">
+        Teachers
+      </button>
+
+      <button class="nav-item">
+        Content
+      </button>
+
     </div>
+
+    <div class="nav-actions">
+
+      <span class="lang">
+        IN
+      </span>
+
+      <button class="contact-btn">
+        Admin
+      </button>
+
+    </div>
+
   </nav>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <h1>Admin Dashboard</h1>
-    <p>Manage your learning platform efficiently</p>
+  <section class="hero">
 
-    <div class="cards">
-      <!-- Students -->
-      <div class="card" (click)="goToStudents()">
-        <h2>Students</h2>
-        <p>View, edit and manage all enrolled students</p>
-        <button class="btn-primary">Manage Students</button>
+    <div class="hero-left">
+
+      <span class="section-tag">
+        Administration
+      </span>
+
+      <h1>
+        Together, We
+        <span class="accent">
+          Manage
+        </span>
+        The Future
+        of Education
+      </h1>
+
+      <p>
+        Oversee students, teachers and educational
+        content through a modern centralized platform
+        built for institutions.
+      </p>
+
+      <div class="hero-buttons">
+
+        <button
+          class="primary-btn"
+          (click)="goToStudents()">
+          Manage Students
+        </button>
+
+        <button
+          class="secondary-btn"
+          (click)="goToTeachers()">
+          Teachers
+        </button>
+
       </div>
 
-      <!-- Teachers -->
-      <div class="card" (click)="goToTeachers()">
-        <h2>Teachers</h2>
-        <p>Manage instructors and teaching staff</p>
-        <button class="btn-primary">Manage Teachers</button>
-      </div>
-
-      <!-- Content -->
-      <div class="card" (click)="goToContent()">
-        <h2>Content</h2>
-        <p>Manage courses, lessons and learning materials</p>
-        <button class="btn-primary">Manage Content</button>
-      </div>
     </div>
-  </div>
+
+    <div class="hero-right">
+
+      <div class="dashboard-window">
+
+        <div class="window-header">
+
+          <div class="window-brand">
+            EdTech
+          </div>
+
+          <div class="window-title">
+            Administrative Overview
+          </div>
+
+        </div>
+
+        <div class="metrics-grid">
+
+          <div
+            class="metric-card"
+            (click)="goToStudents()">
+
+            <span>
+              Students
+            </span>
+
+            <h3>
+              1,248
+            </h3>
+
+          </div>
+
+          <div
+            class="metric-card"
+            (click)="goToTeachers()">
+
+            <span>
+              Teachers
+            </span>
+
+            <h3>
+              84
+            </h3>
+
+          </div>
+
+          <div
+            class="metric-card"
+            (click)="goToContent()">
+
+            <span>
+              Content
+            </span>
+
+            <h3>
+              432
+            </h3>
+
+          </div>
+
+          <div class="metric-card">
+
+            <span>
+              Completion
+            </span>
+
+            <h3>
+              96%
+            </h3>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="floating-stat">
+
+        <span>
+          Platform Health
+        </span>
+
+        <h4>
+          98%
+        </h4>
+
+      </div>
+
+    </div>
+
+  </section>
 
 </div>

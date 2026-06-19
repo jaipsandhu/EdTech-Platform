@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { Landing } from './features/landing/landing/landing';
+
 import { Signin } from './features/auth/signin/signin';
 import { Register } from './features/auth/register/register';
 import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
@@ -10,36 +12,69 @@ import { TeacherManagement } from './features/admin/teacher-management/teacher-m
 import { ContentManagement } from './features/admin/content-management/content-management';
 
 import { TeacherDashboard } from './features/teacher/teacher-dashboard/teacher-dashboard';
-import { StudentDashboard }
-  from './features/student/student-dashboard/student-dashboard';
+import { StudentDashboard } from './features/student/student-dashboard/student-dashboard';
+
 export const routes: Routes = [
+
+  // Landing Page
   {
     path: '',
-    redirectTo: 'signin',
-    pathMatch: 'full'
+    component: Landing
   },
 
-  { path: 'signin', component: Signin },
-  { path: 'register', component: Register },
-  { path: 'forgot-password', component: ForgotPassword },
+  // Auth
+  {
+    path: 'signin',
+    component: Signin
+  },
 
-  // Admin Routes
-  { path: 'admin', component: AdminDashboard },
-  { path: 'admin/students', component: StudentManagement },
-  { path: 'admin/teachers', component: TeacherManagement },
-  { path: 'admin/content', component: ContentManagement },
+  {
+    path: 'register',
+    component: Register
+  },
 
-  // Teacher Routes
-  { path: 'teacher', component: TeacherDashboard },
+  {
+    path: 'forgot-password',
+    component: ForgotPassword
+  },
 
+  // Admin
+  {
+    path: 'admin',
+    component: AdminDashboard
+  },
 
+  {
+    path: 'admin/students',
+    component: StudentManagement
+  },
 
-  // Student Routes
-  { path: 'student', component: StudentDashboard },
+  {
+    path: 'admin/teachers',
+    component: TeacherManagement
+  },
 
-// Fallback route
+  {
+    path: 'admin/content',
+    component: ContentManagement
+  },
+
+  // Teacher
+  {
+    path: 'teacher',
+    component: TeacherDashboard
+  },
+
+  // Student
+  {
+    path: 'student',
+    component: StudentDashboard
+  },
+
+  // Fallback
   {
     path: '**',
-    redirectTo: 'signin'
-  },
+    redirectTo: ''
+  }
+
 ];

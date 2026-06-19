@@ -1,75 +1,177 @@
-/* ── Global Brutalist EdTech Layout ── */
-*, *::before, *::after {
+:host {
+  --color-white: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-charcoal: #1c1c1c;
+  --color-muted: #747474;
+  --color-line: #d8d8d8;
+  --color-soft: #f4f4f2;
+  --color-olive: #8a7045;
+  --color-orange: #ff6b35;
+
+  display: block;
+  min-height: 100vh;
+  color: var(--color-ink);
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  background: var(--color-white);
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+.app-shell {
   min-height: 100vh;
-  background: #f8f6f3;
-  background-image:
-    linear-gradient(#e5e3dc 1px, transparent 1px),
-    linear-gradient(90deg, #e5e3dc 1px, transparent 1px);
-  background-size: 40px 40px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #1a1a1a;
+  width: 100%;
+  background: var(--color-white);
+  color: var(--color-ink);
   overflow-x: hidden;
+}
+
+/* Shared Ventriloc-style page rhythm */
+:host ::ng-deep body {
+  margin: 0;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
 }
 
-/* Auth Page Wrapper - Right Aligned (Modern SaaS Style) */
-.auth-wrapper {
+:host ::ng-deep a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+:host ::ng-deep button,
+:host ::ng-deep input,
+:host ::ng-deep textarea,
+:host ::ng-deep select {
+  font: inherit;
+}
+
+:host ::ng-deep button {
+  cursor: pointer;
+}
+
+:host ::ng-deep .auth-wrapper {
   min-height: 100vh;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  padding-right: 180px;
-  padding-left: 40px;
-
-  overflow: hidden;
-}
-
-/* Auth Card Common Styles */
-.register-container,
-.signin-container,
-.forgot-container {
-  width: 100%;
-  max-width: 460px;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
   background: #ffffff;
-  border: 3px solid #1a1a1a;
-  border-radius: 4px;
-  box-shadow: 8px 8px 0 #1a1a1a;
-  padding: 48px 40px;
 }
 
-/* Responsive */
+:host ::ng-deep .register-container,
+:host ::ng-deep .signin-container,
+:host ::ng-deep .forgot-container {
+  width: min(100%, 460px);
+  background: #ffffff;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.08);
+  padding: 48px 42px;
+}
+
+:host ::ng-deep .register-container h1,
+:host ::ng-deep .signin-container h1,
+:host ::ng-deep .forgot-container h1,
+:host ::ng-deep .register-container h2,
+:host ::ng-deep .signin-container h2,
+:host ::ng-deep .forgot-container h2 {
+  margin: 0 0 28px;
+  color: #1a1a1a;
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+:host ::ng-deep .register-container p,
+:host ::ng-deep .signin-container p,
+:host ::ng-deep .forgot-container p {
+  color: #747474;
+}
+
+:host ::ng-deep input,
+:host ::ng-deep textarea,
+:host ::ng-deep select {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #d8d8d8;
+  border-radius: 0;
+  background: transparent;
+  color: #1a1a1a;
+  padding: 16px 0;
+  outline: none;
+}
+
+:host ::ng-deep input::placeholder,
+:host ::ng-deep textarea::placeholder {
+  color: #747474;
+}
+
+:host ::ng-deep input:focus,
+:host ::ng-deep textarea:focus,
+:host ::ng-deep select:focus {
+  border-bottom-color: #1a1a1a;
+}
+
+:host ::ng-deep button,
+:host ::ng-deep .btn,
+:host ::ng-deep .button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 999px;
+  background: #1c1c1c;
+  color: #ffffff;
+  padding: 0 28px;
+  font-weight: 600;
+  box-shadow: none;
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+:host ::ng-deep button:hover,
+:host ::ng-deep .btn:hover,
+:host ::ng-deep .button:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+}
+
+:host ::ng-deep button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
 @media (max-width: 768px) {
-  .auth-wrapper {
-    justify-content: center;
-    padding: 24px;
+  :host ::ng-deep .auth-wrapper {
+    padding: 28px 18px;
   }
 
-  .register-container,
-  .signin-container,
-  .forgot-container {
-    max-width: 100%;
-    padding: 36px 28px;
+  :host ::ng-deep .register-container,
+  :host ::ng-deep .signin-container,
+  :host ::ng-deep .forgot-container {
+    padding: 38px 28px;
   }
 }
-
-
 
 @media (max-width: 480px) {
-  .auth-wrapper {
-    padding: 16px;
+  :host ::ng-deep .auth-wrapper {
+    padding: 18px 14px;
   }
 
-  .register-container,
-  .signin-container,
-  .forgot-container {
-    padding: 32px 24px;
+  :host ::ng-deep .register-container,
+  :host ::ng-deep .signin-container,
+  :host ::ng-deep .forgot-container {
+    padding: 32px 22px;
   }
 }

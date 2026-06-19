@@ -1,309 +1,79 @@
-<div class="content-management">
+Here is a comprehensive design prompt detailing the UI/UX style, visual language, and component structure based on the provided website screens. This can be used as a brief for a designer or as a prompt for UI generation.
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="brand">
-      <div class="brand-icon">🎓</div>
-      <span class="brand-name">EdTech</span>
-    </div>
+### **Design System: Ventriloc**
 
-    <div class="welcome">
-      Welcome back, <strong>Admin</strong>
-    </div>
-  </nav>
+**Overall Theme & Art Direction**
 
-  <div class="main-content">
+* **Vibe:** Modern, minimalist, corporate B2B, clean, and data-driven.
+* **Style:** Typography-centric, utilizing ample white space, high-contrast layouts, and subtle, sophisticated interactive elements. It balances professional austerity with bold accent graphics.
 
-    <!-- Header -->
-    <div class="page-header">
-
-      <div>
-        <h1>Content Management</h1>
-        <p>
-          Manage courses, lessons and learning materials
-        </p>
-      </div>
-
-      <div class="controls">
+---
 
-        <button
-          class="btn-upload"
-          (click)="openUploadModal()"
-        >
-          + Upload New Content
-        </button>
-
-        <input
-          type="text"
-          class="search-input"
-          placeholder="Search content..."
-          [(ngModel)]="searchTerm"
-          (input)="filterContent()"
-        >
-
-      </div>
+### **1. Color Palette**
 
-    </div>
+* **Primary Background:** Pure White (`#FFFFFF`).
+* **Secondary Background (Footer/Dark Modes):** Deep Charcoal / Off-Black (approx. `#1C1C1C`).
+* **Primary Text:** Dark Charcoal / Almost Black (approx. `#1A1A1A`).
+* **Secondary Text:** Medium Gray (used for placeholders, secondary navigation, and footer links).
+* **Accent Color 1 (Typography Emphasis):** Earthy Olive Gold (approx. `#8A7045`). Used to highlight specific words in hero headers (e.g., "Together", "Let's visualize").
+* **Accent Color 2 (Brand Graphic):** Vibrant Orange (approx. `#FF6B35`). Used for large, abstract brand shapes (e.g., the large bracket/brace in the footer).
 
-    <!-- Loading -->
-    <div
-      *ngIf="loading"
-      style="
-        text-align:center;
-        padding:120px 20px;
-        color:#666;
-      "
-    >
+---
 
-      <p>Loading content...</p>
+### **2. Typography**
 
-    </div>
+* **Font Family:** A clean, modern geometric sans-serif (similar to *Inter*, *Roobert*, or *Helvetica Neue*).
+* **Hierarchy & Styling:**
+* **Hero Headers (H1):** Very large, bold to medium weight. Uses tight line height. Often mixes dark charcoal text with the Olive Gold accent color for emphasis.
+* **Section Headers (H2/H3):** Small, all-caps or title case, clean and unobtrusive (e.g., the small "Contact" or "Data visualization" text above hero headlines).
+* **Body Text:** Regular weight, highly legible, medium gray or dark charcoal depending on the background.
+* **Links/Navigation:** Regular weight. Hover states in dropdowns use a dark gray rectangular highlight behind the text.
 
-    <!-- Table -->
-    <div
-      *ngIf="
-        !loading &&
-        filteredContents.length > 0
-      "
-      class="table-container"
-    >
-
-      <table>
-
-        <thead>
-
-        <tr>
-
-          <th>Title</th>
-
-          <th>Uploaded By</th>
-
-          <th>Type</th>
-
-          <th>Status</th>
-
-          <th style="text-align:right;">
-            Actions
-          </th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        <tr
-          *ngFor="
-            let content of filteredContents;
-            trackBy: trackById
-          "
-        >
-
-          <!-- TITLE -->
-          <td>
-            <strong>
-              {{ content.title }}
-            </strong>
-          </td>
-
-          <!-- UPLOADED BY -->
-          <td>
-
-            <span
-              style="
-                font-weight:600;
-                color:#444;
-              "
-            >
-              {{ content.uploadedBy || 'N/A' }}
-            </span>
-
-          </td>
-
-          <!-- TYPE -->
-          <td>
-            {{ content.contentType }}
-          </td>
-
-          <!-- STATUS -->
-          <td>
-
-            <span
-              [class.status-active]="content.active"
-              [class.status-inactive]="!content.active"
-            >
-
-              {{
-                content.active
-                  ? 'Active'
-                  : 'Inactive'
-              }}
-
-            </span>
-
-          </td>
-
-          <!-- ACTIONS -->
-          <td style="text-align:right;">
-
-            <div class="actions">
-
-              <!-- VIEW -->
-              <button
-                class="btn-view"
-                (click)="viewContent(content.fileUrl)"
-              >
-                View
-              </button>
-
-              <!-- ACTIVATE -->
-              <button
-                class="btn-activate"
-                *ngIf="!content.active"
-                (click)="activateContent(content.id)"
-              >
-                Activate
-              </button>
-
-              <!-- DEACTIVATE -->
-              <button
-                class="btn-deactivate"
-                *ngIf="content.active"
-                (click)="deactivateContent(content.id)"
-              >
-                Deactivate
-              </button>
-
-              <!-- DELETE -->
-              <button
-                class="btn-delete"
-                (click)="deleteContent(content.id)"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <!-- Empty -->
-    <div
-      *ngIf="
-        !loading &&
-        filteredContents.length === 0
-      "
-      style="
-        text-align:center;
-        padding:120px 20px;
-        color:#888;
-      "
-    >
-
-      <p>No content found.</p>
-
-    </div>
-
-  </div>
-
-  <!-- Upload Modal -->
-  <div
-    *ngIf="showUploadModal"
-    class="modal"
-    (click)="closeUploadModal()"
-  >
-
-    <div
-      class="modal-content"
-      (click)="$event.stopPropagation()"
-    >
-
-      <h2>Upload New Content</h2>
-
-      <label>Title</label>
-
-      <input
-        type="text"
-        [(ngModel)]="uploadTitle"
-        placeholder="Content Title"
-      >
-
-      <label>Subject</label>
-
-      <input
-        type="text"
-        [(ngModel)]="uploadSubject"
-        placeholder="e.g. Mathematics"
-      >
-
-      <label>Description</label>
-
-      <textarea
-        [(ngModel)]="uploadDescription"
-        rows="3"
-        placeholder="Brief description"
-      ></textarea>
-
-      <label>Content Type</label>
-
-      <select [(ngModel)]="uploadContentType">
-
-        <option value="VIDEO">
-          Video
-        </option>
-
-        <option value="PDF">
-          PDF
-        </option>
-
-        <option value="IMAGE">
-          Image
-        </option>
-
-      </select>
-
-      <label>Upload File</label>
-
-      <input
-        type="file"
-        (change)="onFileSelected($event)"
-        accept="*/*"
-      >
-
-      <div class="modal-actions">
-
-        <button
-          (click)="closeUploadModal()"
-          style="
-            background:#f1f1f1;
-            color:#333;
-          "
-        >
-          Cancel
-        </button>
-
-        <button
-          (click)="uploadContent()"
-          [disabled]="!selectedFile"
-          style="
-            background:#ff6b35;
-            color:white;
-          "
-        >
-          Upload Content
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
+
+
+---
+
+### **3. Layout & Grid**
+
+* **Structure:** Primarily utilizes a split-screen (50/50) or asymmetric two-column layout for hero sections (e.g., Text on the left, forms or dashboard mockups on the right).
+* **Spacing:** Generous padding and margins. High utilization of negative space to draw focus to the typography and core elements.
+* **Width:** Content is contained within a max-width wrapper, keeping edges aligned across different sections.
+
+---
+
+### **4. UI Components**
+
+* **Buttons:**
+* **Shape:** Fully rounded (pill-shaped).
+* **Style:** Solid Dark Charcoal/Black with white text.
+* *Example:* "Contact us" in the nav, "Let's work together" in the hero, Submit button in the form.
+
+
+* **Navigation Bar:**
+* Clean, transparent background (blending with the white page).
+* Logo on the far left.
+* Centered links with subtle downward chevrons indicating dropdowns.
+* Right-aligned utility section: Language toggle ("IN") and a pill-shaped CTA button.
+
+
+* **Dropdown Menus:**
+* Floating white cards with a very soft, diffused drop shadow.
+* Clean categorization with small, bold headers.
+* Hover state: A dark charcoal box encapsulates the active link text with white font.
+
+
+* **Forms:**
+* Ultra-minimalist.
+* No bounding boxes or background colors for input fields.
+* Uses only a thin, light gray bottom border.
+* Labels act as placeholders within the field structure.
+
+
+* **Toggles/Switches:**
+* Pill-shaped track. Light gray background with a white or dark thumb indicator (seen in the footer for language selection: FR / IN).
+
+
+* **Icons & Graphics:**
+* **Icons:** Thin line, minimalist style. (e.g., circular checkmarks for lists, simple chevrons).
+* **UI Mockups:** Software/dashboard visualizations are presented as floating white cards with soft drop shadows, keeping the internal UI clean and aligned with the brand's aesthetic.
+* **Brand Graphics:** Large, flat-color, abstract shapes (like the orange right-brace in the footer) extending off-screen to create visual interest in otherwise dark/empty spaces.

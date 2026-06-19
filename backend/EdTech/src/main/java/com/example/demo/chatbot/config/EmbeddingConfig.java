@@ -30,7 +30,7 @@ public class EmbeddingConfig {
                 .embeddingStore(embeddingStore)
                 .embeddingModel(embeddingModel)
                 .maxResults(3)
-                .minScore(0.75)  // only inject context if similarity is high enough
+                .minScore(0.6)  // only inject context if similarity is high enough
                 .build();
     }
 }
