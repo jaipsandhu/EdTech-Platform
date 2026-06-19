@@ -449,4 +449,15 @@ export class Auth {
     );
   }
 
+  chatWithAI(message: string) {
+    const token = localStorage.getItem('token');
+    return this.http.get(`http://localhost:8080/chat`, {
+      params: { message },
+      responseType: 'text',
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      })
+    });
+  }
+
 }

@@ -11,217 +11,109 @@
     </div>
   </nav>
 
-  <div class="main-content">
+  <div class="main-layout">
+    <!-- Main Content -->
+    <div class="content-area">
+      <div class="page-header">
+        <div>
+          <h1>Student Dashboard</h1>
+          <p>Browse and learn from available content</p>
+        </div>
 
-    <div class="page-header">
-
-      <div>
-        <h1>Student Dashboard</h1>
-        <p>Browse and learn from available content</p>
+        <div class="controls">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search content..."
+            [(ngModel)]="searchTerm"
+            (input)="filterContents()">
+        </div>
       </div>
 
-      <div class="controls">
+      <!-- Loading -->
+      <div *ngIf="loading" style="text-align: center; padding: 120px 20px; color: #666;">
+        <p>Loading available content...</p>
+      </div>
+
+      <!-- Content Table -->
+      <div *ngIf="!loading && filteredContents.length > 0" class="table-container">
+        <table>
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Uploaded By</th>
+            <th>Type</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let content of filteredContents; trackBy: trackById">
+            <td><strong>{{ content.title }}</strong></td>
+            <td>{{ content.uploadedBy || 'N/A' }}</td>
+            <td>{{ content.contentType }}</td>
+            <td style="text-align: right;">
+              <div class="actions">
+                <button class="btn-view" (click)="viewContent(content)">View</button>
+                <button class="btn-notes" (click)="openNotes(content)">Open Notes</button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && filteredContents.length === 0" style="text-align: center; padding: 120px 20px; color: #888;">
+        <p>No content available at the moment.</p>
+      </div>
+    </div>
+
+    <!-- AI Chat Sidebar -->
+    <div class="chat-sidebar">
+      <div class="chat-header">
+        <strong>AI Assistant</strong>
+        <span>Ask anything about your courses</span>
+      </div>
+
+      <div class="chat-messages">
+        <div *ngFor="let msg of messages" class="message" [class.user]="msg.isUser">
+          {{ msg.text }}
+        </div>
+      </div>
+
+      <div class="chat-input">
         <input
           type="text"
-          class="search-input"
-          placeholder="Search content..."
-          [(ngModel)]="searchTerm"
-          (input)="filterContents()">
+          [(ngModel)]="chatInput"
+          (keyup.enter)="sendMessage()"
+          placeholder="Ask AI anything...">
+        <button (click)="sendMessage()">Send</button>
       </div>
-
     </div>
-
-    <!-- Loading -->
-    <div
-      *ngIf="loading"
-      style="text-align:center;padding:120px 20px;color:#666;">
-
-      <p>Loading available content...</p>
-
-    </div>
-
-    <!-- Content Table -->
-    <div
-      *ngIf="!loading && filteredContents.length > 0"
-      class="table-container">
-
-      <table>
-
-        <thead>
-        <tr>
-          <th>Title</th>
-          <th>Uploaded By</th>
-          <th>Type</th>
-          <th style="text-align:right;">Actions</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-        <tr
-          *ngFor="
-            let content of filteredContents;
-            trackBy: trackById
-          ">
-
-          <td>
-            <strong>
-              {{ content.title }}
-            </strong>
-          </td>
-
-          <td>
-            {{ content.uploadedBy || 'N/A' }}
-          </td>
-
-          <td>
-            {{ content.contentType }}
-          </td>
-
-          <td style="text-align:right;">
-
-            <div class="actions">
-
-              <button
-                class="btn-view"
-                (click)="viewContent(content)">
-
-                View
-
-              </button>
-
-              <button
-                class="btn-notes"
-                (click)="openNotes(content)">
-
-                Open Notes
-
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <!-- Empty State -->
-    <div
-      *ngIf="
-        !loading &&
-        filteredContents.length === 0
-      "
-      style="
-        text-align:center;
-        padding:120px 20px;
-        color:#888;
-      ">
-
-      <p>
-        No content available at the moment.
-      </p>
-
-    </div>
-
   </div>
 
   <!-- Notes Modal -->
-  <div
-    *ngIf="showNotesModal"
-    class="modal"
-    (click)="closeNotesModal()">
+  <div *ngIf="showNotesModal" class="modal" (click)="closeNotesModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Notes: {{ selectedContent?.title }}</h2>
 
-    <div
-      class="modal-content"
-      (click)="$event.stopPropagation()">
-
-      <h2>
-        Notes:
-        {{ selectedContent?.title }}
-      </h2>
-
-      <!-- Add/Edit Note -->
       <div class="add-note">
-
-        <input
-          type="text"
-          placeholder="Note Title"
-          [(ngModel)]="newNoteTitle">
-
-        <textarea
-          placeholder="Write your note here..."
-          rows="4"
-          [(ngModel)]="newNoteContent">
-        </textarea>
-
-        <button
-          (click)="saveNote()"
-          [disabled]="!newNoteTitle || !newNoteContent">
-
-          {{
-            editingNoteId !== null
-              ? 'Update Note'
-              : 'Save Note'
-          }}
-
-        </button>
-
+        <input type="text" placeholder="Note Title" [(ngModel)]="newNoteTitle">
+        <textarea placeholder="Write your note here..." rows="4" [(ngModel)]="newNoteContent"></textarea>
+        <button (click)="saveNote()" [disabled]="!newNoteTitle || !newNoteContent">Save Note</button>
       </div>
 
-      <!-- Existing Notes -->
       <div class="notes-list">
-
-        <div
-          *ngFor="let note of notes"
-          class="note-item">
-
-          <h4>
-            {{ note.title }}
-          </h4>
-
-          <p>
-            {{ note.content }}
-          </p>
-
-          <button
-            class="btn-edit-note"
-            (click)="startEdit(note)">
-
-            Edit
-
-          </button>
-
-          <button
-            class="btn-delete-note"
-            (click)="deleteNote(note.id)">
-
-            Delete
-
-          </button>
-
+        <div *ngFor="let note of notes" class="note-item">
+          <h4>{{ note.title }}</h4>
+          <p>{{ note.content }}</p>
+          <button class="btn-delete-note" (click)="deleteNote(note.id)">Delete</button>
         </div>
-
       </div>
 
       <div class="modal-actions">
-
-        <button
-          (click)="closeNotesModal()">
-
-          Close
-
-        </button>
-
+        <button (click)="closeNotesModal()">Close</button>
       </div>
-
     </div>
-
   </div>
-
 </div>
-```

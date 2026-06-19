@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
@@ -18,6 +18,11 @@ interface Note {
   content: string;
 }
 
+interface ChatMessage {
+  text: string;
+  isUser: boolean;
+}
+
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
@@ -29,18 +34,24 @@ export class StudentDashboard implements OnInit {
 
   contents: Content[] = [];
   filteredContents: Content[] = [];
-  searchTerm = '';
-  loading = true;
+  searchTerm: string = '';
+  loading: boolean = true;
 
   // Notes Modal
   showNotesModal = false;
   selectedContent: Content | null = null;
   notes: Note[] = [];
-
   newNoteTitle = '';
   newNoteContent = '';
 
-  editingNoteId: number | null = null;
+  // AI Chat
+  messages: ChatMessage[] = [
+    { text: "Hello! How can I help you with your studies today?", isUser: false }
+  ];
+  chatInput: string = '';
+  isChatLoading = false;
+
+  @ViewChild('chatContainer') chatContainer!: ElementRef;
 
   constructor(
     private auth: Auth,
@@ -52,284 +63,122 @@ export class StudentDashboard implements OnInit {
   }
 
   loadContents(): void {
-
     this.loading = true;
-
     this.auth.getStudentContent().subscribe({
-
       next: (data: any) => {
-
-        this.contents =
-          Array.isArray(data) ? data : [];
-
-        this.filteredContents =
-          [...this.contents];
-
+        this.contents = Array.isArray(data) ? data : [];
+        this.filteredContents = [...this.contents];
         this.loading = false;
-
         this.cdr.detectChanges();
       },
-
       error: (err: any) => {
-
-        console.error(
-          'Failed to load contents:',
-          err
-        );
-
+        console.error('Failed to load contents:', err);
         this.loading = false;
       }
     });
   }
 
   filterContents(): void {
-
-    const term =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
-
+    const term = this.searchTerm.toLowerCase().trim();
     this.filteredContents = term
-
-      ? this.contents.filter(
-        c =>
-          c.title
-            .toLowerCase()
-            .includes(term)
-      )
-
+      ? this.contents.filter(c => c.title.toLowerCase().includes(term))
       : [...this.contents];
   }
 
-  viewContent(
-    content: Content
-  ): void {
-
-    window.open(
-      content.fileUrl,
-      '_blank'
-    );
+  viewContent(content: Content): void {
+    window.open(content.fileUrl, '_blank');
   }
 
-  openNotes(
-    content: Content
-  ): void {
-
-    this.selectedContent =
-      content;
-
-    this.showNotesModal =
-      true;
-
-    this.loadNotes(
-      content.id
-    );
+  openNotes(content: Content): void {
+    this.selectedContent = content;
+    this.showNotesModal = true;
+    this.loadNotes(content.id);
   }
 
-  loadNotes(
-    contentId: number
-  ): void {
-
-    this.notes = [];
-
-    this.auth.getNotes(
-      contentId
-    ).subscribe({
-
-      next: (data: any) => {
-
-        console.log('Notes loaded:', data);
-
-        this.notes =
-          Array.isArray(data)
-            ? [...data]
-            : [];
-
-        this.cdr.markForCheck();
-
-        setTimeout(() => {
-
-          this.cdr.detectChanges();
-
-        }, 0);
-      },
-
-      error: (err: any) => {
-
-        console.error(
-          'Failed to load notes:',
-          err
-        );
-      }
+  loadNotes(contentId: number): void {
+    this.auth.getNotes(contentId).subscribe({
+      next: (data: any) => this.notes = Array.isArray(data) ? data : [],
+      error: (err: any) => console.error('Failed to load notes:', err)
     });
   }
 
-  startEdit(
-    note: Note
-  ): void {
-
-    this.editingNoteId =
-      note.id;
-
-    this.newNoteTitle =
-      note.title;
-
-    this.newNoteContent =
-      note.content;
-  }
-
   saveNote(): void {
-
-    if (
-      !this.selectedContent ||
-      !this.newNoteTitle ||
-      !this.newNoteContent
-    ) {
-      return;
-    }
+    if (!this.selectedContent || !this.newNoteTitle || !this.newNoteContent) return;
 
     const payload = {
-
-      title:
-      this.newNoteTitle,
-
-      content:
-      this.newNoteContent,
-
-      contentId:
-      this.selectedContent.id
+      title: this.newNoteTitle,
+      content: this.newNoteContent,
+      contentId: this.selectedContent.id
     };
 
-    if (
-      this.editingNoteId !== null
-    ) {
-
-      this.auth.updateNote(
-        this.editingNoteId,
-        payload
-      ).subscribe({
-
-        next: () => {
-
-          this.loadNotes(
-            this.selectedContent!.id
-          );
-
-          this.editingNoteId =
-            null;
-
-          this.newNoteTitle =
-            '';
-
-          this.newNoteContent =
-            '';
-        },
-
-        error: (err: any) => {
-
-          console.error(err);
-
-          alert(
-            'Failed to update note'
-          );
-        }
-      });
-
-    } else {
-
-      this.auth.createNote(
-        payload
-      ).subscribe({
-
-        next: () => {
-
-          this.loadNotes(
-            this.selectedContent!.id
-          );
-
-          this.newNoteTitle =
-            '';
-
-          this.newNoteContent =
-            '';
-        },
-
-        error: (err: any) => {
-
-          console.error(err);
-
-          alert(
-            'Failed to save note'
-          );
-        }
-      });
-    }
+    this.auth.createNote(payload).subscribe({
+      next: () => {
+        this.loadNotes(this.selectedContent!.id);
+        this.newNoteTitle = '';
+        this.newNoteContent = '';
+      },
+      error: (err: any) => alert('Failed to save note')
+    });
   }
 
-  deleteNote(
-    noteId: number
-  ): void {
-
-    if (
-      !confirm(
-        'Delete this note?'
-      )
-    ) {
-      return;
-    }
-
-    this.auth.deleteNote(
-      noteId
-    ).subscribe({
-
+  deleteNote(noteId: number): void {
+    if (!confirm('Delete this note?')) return;
+    this.auth.deleteNote(noteId).subscribe({
       next: () => {
-
-        if (
-          this.selectedContent
-        ) {
-
-          this.loadNotes(
-            this.selectedContent.id
-          );
-        }
+        if (this.selectedContent) this.loadNotes(this.selectedContent.id);
       },
-
-      error: (err: any) => {
-
-        console.error(err);
-
-        alert(
-          'Failed to delete note'
-        );
-      }
+      error: (err: any) => alert('Failed to delete note')
     });
   }
 
   closeNotesModal(): void {
-
-    this.showNotesModal =
-      false;
-
-    this.selectedContent =
-      null;
-
+    this.showNotesModal = false;
+    this.selectedContent = null;
     this.notes = [];
-
-    this.editingNoteId =
-      null;
-
-    this.newNoteTitle =
-      '';
-
-    this.newNoteContent =
-      '';
   }
 
-  trackById(
-    index: number,
-    item: any
-  ): number {
+  // ── AI Chat ──
 
+  sendMessage(): void {
+    if (!this.chatInput.trim() || this.isChatLoading) return;
+
+    const userMessage = this.chatInput.trim();
+    this.messages.push({ text: userMessage, isUser: true });
+    this.chatInput = '';
+    this.isChatLoading = true;
+    this.scrollToBottom();
+
+    // placeholder for streaming
+    const aiMessage: ChatMessage = { text: '', isUser: false };
+    this.messages.push(aiMessage);
+
+    this.auth.chatWithAI(userMessage).subscribe({
+      next: (chunk: string) => {
+        aiMessage.text += chunk;   // accumulate streamed chunks
+        this.cdr.detectChanges();
+        this.scrollToBottom();
+      },
+      error: (err) => {
+        aiMessage.text = "Sorry, I'm having trouble responding right now.";
+        this.isChatLoading = false;
+        this.cdr.detectChanges();
+      },
+      complete: () => {
+        this.isChatLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      if (this.chatContainer?.nativeElement) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
+    }, 100);
+  }
+
+  trackById(index: number, item: any): number {
     return item.id;
   }
 }

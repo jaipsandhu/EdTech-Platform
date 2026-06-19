@@ -44,6 +44,7 @@ import java.io.IOException;
                 return chatService.chat(message);
             }
 
+
             // 2. Process uploaded document
             log.info("Saving document ...");
             Resource resource = ragService.saveDocument(file);
