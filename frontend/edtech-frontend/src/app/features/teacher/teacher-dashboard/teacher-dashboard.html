@@ -26,73 +26,19 @@
 
     </div>
 
-    <div class="nav-actions">
-
-      <span class="lang">
-        IN
-      </span>
-
-      <button class="contact-btn">
-        Teacher
-      </button>
-
-    </div>
+    <button class="contact-btn">
+      Teacher
+    </button>
 
   </nav>
 
-  <section class="hero">
+  <section class="management-header">
 
-    <div class="hero-left">
-
-      <span class="section-tag">
-        Teacher Workspace
-      </span>
-
-      <h1>
-        Together, We
-        <span class="accent">
-          Create
-        </span>
-        Better Learning
-      </h1>
-
-      <p>
-        Upload educational resources, manage
-        teaching materials and deliver engaging
-        learning experiences through one platform.
-      </p>
-
-      <button
-        class="primary-btn"
-        (click)="openUploadModal()">
-
-        Upload Content
-
-      </button>
-
+    <div class="header-left">
+      <h1>Teacher Content</h1>
     </div>
 
-    <div class="hero-right">
-
-      <div class="stats-card">
-
-        <span>
-          Published Resources
-        </span>
-
-        <h3>
-          {{ contents.length }}
-        </h3>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <section class="content-section">
-
-    <div class="toolbar">
+    <div class="header-right">
 
       <input
         type="text"
@@ -101,84 +47,111 @@
         [(ngModel)]="searchTerm"
         (input)="filterContent()">
 
+      <div class="content-count">
+        <span>Total Content</span>
+        <h3>{{ filteredContents.length }}</h3>
+      </div>
+
+      <button
+        class="upload-btn"
+        (click)="openUploadModal()">
+
+        Upload Content
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    *ngIf="!loading"
+    class="content-table">
+
+    <div class="table-header">
+
+      <span>Content Library</span>
+
+      <span>
+        {{ filteredContents.length }}
+        Records
+      </span>
+
     </div>
 
     <div
-      *ngIf="!loading"
-      class="content-grid">
+      class="content-row"
+      *ngFor="
+      let content of filteredContents;
+      trackBy: trackById">
 
-      <div
-        class="content-card"
-        *ngFor="
-          let content of filteredContents;
-          trackBy: trackById
-        ">
+      <div class="content-info">
 
-        <span class="content-type">
-          {{ content.contentType }}
+        <h3>{{ content.title }}</h3>
+
+        <span>
+          Uploaded by {{ content.uploadedBy }}
         </span>
 
-        <h3>
-          {{ content.title }}
-        </h3>
+      </div>
 
-        <p>
-          {{ content.uploadedBy }}
-        </p>
+      <div class="role">
+        {{ content.contentType }}
+      </div>
 
-        <div class="status-row">
+      <div class="status">
 
-          <span
-            class="status"
-            [class.active-status]="content.active">
+        <span
+          *ngIf="content.active"
+          class="active-status">
 
-            {{
-              content.active
-                ? 'Active'
-                : 'Inactive'
-            }}
+          ACTIVE
 
-          </span>
+        </span>
 
-        </div>
+        <span *ngIf="!content.active">
 
-        <div class="card-actions">
+          INACTIVE
 
-          <button
-            class="secondary-btn"
-            (click)="viewContent(content.fileUrl)">
+        </span>
 
-            View
+      </div>
 
-          </button>
+      <div class="actions">
 
-          <button
-            *ngIf="!content.active"
-            class="secondary-btn"
-            (click)="activateContent(content.id)">
+        <button
+          class="edit-btn"
+          (click)="viewContent(content.fileUrl)">
 
-            Activate
+          View
 
-          </button>
+        </button>
 
-          <button
-            *ngIf="content.active"
-            class="secondary-btn"
-            (click)="deactivateContent(content.id)">
+        <button
+          *ngIf="!content.active"
+          class="edit-btn"
+          (click)="activateContent(content.id)">
 
-            Disable
+          Activate
 
-          </button>
+        </button>
 
-          <button
-            class="delete-btn"
-            (click)="deleteContent(content.id)">
+        <button
+          *ngIf="content.active"
+          class="edit-btn"
+          (click)="deactivateContent(content.id)">
 
-            Delete
+          Deactivate
 
-          </button>
+        </button>
 
-        </div>
+        <button
+          class="delete-btn"
+          (click)="deleteContent(content.id)">
+
+          Delete
+
+        </button>
 
       </div>
 
@@ -187,66 +160,79 @@
   </section>
 
   <div
+    *ngIf="loading"
+    class="loading">
+
+    Loading Content...
+
+  </div>
+
+  <div
     *ngIf="showUploadModal"
-    class="modal"
-    (click)="closeUploadModal()">
+    class="modal-overlay">
 
-    <div
-      class="modal-card"
-      (click)="$event.stopPropagation()">
+    <div class="edit-modal">
 
-      <span class="section-tag">
-        Upload Resource
-      </span>
+      <h2>Upload Content</h2>
 
-      <h2>
-        New
-        <span class="accent">
-          Content
-        </span>
-      </h2>
+      <div class="form-group">
 
-      <input
-        type="text"
-        placeholder="Title"
-        [(ngModel)]="uploadTitle">
+        <label>Title</label>
 
-      <input
-        type="text"
-        placeholder="Subject"
-        [(ngModel)]="uploadSubject">
+        <input
+          type="text"
+          [(ngModel)]="uploadTitle">
 
-      <textarea
-        rows="4"
-        placeholder="Description"
-        [(ngModel)]="uploadDescription">
-      </textarea>
+      </div>
 
-      <select
-        [(ngModel)]="uploadContentType">
+      <div class="form-group">
 
-        <option value="PDF">
-          PDF
-        </option>
+        <label>Subject</label>
 
-        <option value="VIDEO">
-          VIDEO
-        </option>
+        <input
+          type="text"
+          [(ngModel)]="uploadSubject">
 
-        <option value="IMAGE">
-          IMAGE
-        </option>
+      </div>
 
-      </select>
+      <div class="form-group">
 
-      <input
-        type="file"
-        (change)="onFileSelected($event)">
+        <label>Description</label>
+
+        <textarea
+          rows="4"
+          [(ngModel)]="uploadDescription">
+        </textarea>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Content Type</label>
+
+        <select
+          [(ngModel)]="uploadContentType">
+
+          <option value="PDF">PDF</option>
+          <option value="VIDEO">VIDEO</option>
+          <option value="IMAGE">IMAGE</option>
+
+        </select>
+
+      </div>
+
+      <div class="form-group">
+
+        <input
+          type="file"
+          (change)="onFileSelected($event)">
+
+      </div>
 
       <div class="modal-actions">
 
         <button
-          class="secondary-btn"
+          class="cancel-btn"
           (click)="closeUploadModal()">
 
           Cancel
@@ -254,7 +240,7 @@
         </button>
 
         <button
-          class="primary-btn"
+          class="save-btn"
           (click)="uploadContent()">
 
           Upload

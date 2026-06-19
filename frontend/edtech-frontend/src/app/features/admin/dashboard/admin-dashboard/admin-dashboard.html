@@ -8,29 +8,42 @@
 
     <div class="nav-menu">
 
-      <button class="nav-item active">
-        Dashboard
-      </button>
+      <div class="admin-nav">
 
-      <button class="nav-item">
-        Students
-      </button>
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item">
+          Dashboard
+        </a>
 
-      <button class="nav-item">
-        Teachers
-      </button>
+        <a
+          routerLink="/admin/students"
+          routerLinkActive="active"
+          class="nav-item">
+          Students
+        </a>
 
-      <button class="nav-item">
-        Content
-      </button>
+        <a
+          routerLink="/admin/teachers"
+          routerLinkActive="active"
+          class="nav-item">
+          Teachers
+        </a>
+
+        <a
+          routerLink="/admin/content"
+          routerLinkActive="active"
+          class="nav-item">
+          Content
+        </a>
+
+      </div>
 
     </div>
 
     <div class="nav-actions">
-
-      <span class="lang">
-        IN
-      </span>
 
       <button class="contact-btn">
         Admin
@@ -41,45 +54,6 @@
   </nav>
 
   <section class="hero">
-
-    <div class="hero-left">
-
-      <span class="section-tag">
-        Administration
-      </span>
-
-      <h1>
-        Together, We
-        <span class="accent">
-          Manage
-        </span>
-        The Future
-        of Education
-      </h1>
-
-      <p>
-        Oversee students, teachers and educational
-        content through a modern centralized platform
-        built for institutions.
-      </p>
-
-      <div class="hero-buttons">
-
-        <button
-          class="primary-btn"
-          (click)="goToStudents()">
-          Manage Students
-        </button>
-
-        <button
-          class="secondary-btn"
-          (click)="goToTeachers()">
-          Teachers
-        </button>
-
-      </div>
-
-    </div>
 
     <div class="hero-right">
 
@@ -103,13 +77,9 @@
             class="metric-card"
             (click)="goToStudents()">
 
-            <span>
-              Students
-            </span>
+            <span>Students</span>
 
-            <h3>
-              1,248
-            </h3>
+            <h3>1,248</h3>
 
           </div>
 
@@ -117,13 +87,9 @@
             class="metric-card"
             (click)="goToTeachers()">
 
-            <span>
-              Teachers
-            </span>
+            <span>Teachers</span>
 
-            <h3>
-              84
-            </h3>
+            <h3>84</h3>
 
           </div>
 
@@ -131,25 +97,17 @@
             class="metric-card"
             (click)="goToContent()">
 
-            <span>
-              Content
-            </span>
+            <span>Content</span>
 
-            <h3>
-              432
-            </h3>
+            <h3>432</h3>
 
           </div>
 
           <div class="metric-card">
 
-            <span>
-              Completion
-            </span>
+            <span>Completion</span>
 
-            <h3>
-              96%
-            </h3>
+            <h3>96%</h3>
 
           </div>
 
@@ -159,13 +117,9 @@
 
       <div class="floating-stat">
 
-        <span>
-          Platform Health
-        </span>
+        <span>Platform Health</span>
 
-        <h4>
-          98%
-        </h4>
+        <h4>98%</h4>
 
       </div>
 

@@ -36,8 +36,7 @@ interface Content {
   styleUrl: './teacher-dashboard.css'
 })
 
-export class TeacherDashboard
-  implements OnInit {
+export class TeacherDashboard implements OnInit {
 
   contents: Content[] = [];
 
@@ -47,19 +46,19 @@ export class TeacherDashboard
 
   loading: boolean = true;
 
-  showUploadModal = false;
+  showUploadModal: boolean = false;
 
   selectedFile: File | null = null;
 
-  uploadTitle = '';
+  uploadTitle: string = '';
 
-  uploadSubject = '';
+  uploadSubject: string = '';
 
-  uploadDescription = '';
+  uploadDescription: string = '';
 
-  uploadContentType = 'PDF';
+  uploadContentType: string = 'PDF';
 
-  loggedInEmail = '';
+  loggedInEmail: string = '';
 
   constructor(
     private auth: Auth,
@@ -68,217 +67,290 @@ export class TeacherDashboard
 
   ngOnInit(): void {
 
-    this.loggedInEmail =
-      localStorage.getItem('email') || '';
 
-    this.loadContent();
+this.loggedInEmail =
+  localStorage.getItem('email') || '';
+
+this.loadContent();
+
+
   }
 
   loadContent(): void {
 
-    this.loading = true;
 
-    this.auth
-      .getTeacherContent()
-      .subscribe({
+this.loading = true;
 
-        next: (data: any) => {
+this.auth
+  .getTeacherContent()
+  .subscribe({
 
-          console.log(
-            'Teacher content:',
-            data
-          );
+    next: (data: any) => {
 
-          this.contents =
-            Array.isArray(data)
-              ? data
-              : [];
+      console.log(
+        'Teacher Content:',
+        data
+      );
 
-          this.filteredContents =
-            [...this.contents];
+      this.contents =
+        Array.isArray(data)
+          ? data
+          : [];
 
-          this.loading = false;
+      this.filteredContents =
+        [...this.contents];
 
-          this.cdr.detectChanges();
-        },
+      this.loading = false;
 
-        error: (err) => {
+      this.cdr.detectChanges();
+    },
 
-          console.error(err);
+    error: (err) => {
 
-          this.loading = false;
-        }
+      console.error(
+        'Failed to load content:',
+        err
+      );
 
-      });
+      this.loading = false;
+    }
+
+  });
+
 
   }
 
   filterContent(): void {
 
-    const term =
-      this.searchTerm
-        .toLowerCase()
-        .trim();
 
-    if (!term) {
+const term =
+  this.searchTerm
+    .toLowerCase()
+    .trim();
 
-      this.filteredContents =
-        [...this.contents];
+if (!term) {
 
-    } else {
+  this.filteredContents =
+    [...this.contents];
 
-      this.filteredContents =
-        this.contents.filter(content =>
+  return;
+}
 
-          content.title
-            .toLowerCase()
-            .includes(term)
+this.filteredContents =
+  this.contents.filter(content =>
 
-        );
-    }
+    content.title
+      .toLowerCase()
+      .includes(term)
+
+  );
+
+
   }
 
   openUploadModal(): void {
 
-    this.showUploadModal = true;
+
+this.showUploadModal = true;
+
+
   }
 
   closeUploadModal(): void {
 
-    this.showUploadModal = false;
+
+this.showUploadModal = false;
+
+this.selectedFile = null;
+
+this.uploadTitle = '';
+
+this.uploadSubject = '';
+
+this.uploadDescription = '';
+
+this.uploadContentType = 'PDF';
+
+
   }
 
-  onFileSelected(event: any): void {
+  onFileSelected(event: Event): void {
 
-    this.selectedFile =
-      event.target.files[0];
+
+const input =
+  event.target as HTMLInputElement;
+
+if (
+  input.files &&
+  input.files.length > 0
+) {
+
+  this.selectedFile =
+    input.files[0];
+}
+
   }
 
   uploadContent(): void {
 
-    if (!this.selectedFile) {
 
-      alert('Please select a file');
+if (!this.selectedFile) {
 
-      return;
+  alert(
+    'Please select a file.'
+  );
+
+  return;
+}
+
+const formData =
+  new FormData();
+
+formData.append(
+  'file',
+  this.selectedFile
+);
+
+formData.append(
+  'title',
+  this.uploadTitle
+);
+
+formData.append(
+  'subject',
+  this.uploadSubject
+);
+
+formData.append(
+  'description',
+  this.uploadDescription
+);
+
+formData.append(
+  'contentType',
+  this.uploadContentType
+);
+
+this.auth
+  .uploadTeacherContent(formData)
+  .subscribe({
+
+    next: () => {
+
+      alert(
+        'Content uploaded successfully.'
+      );
+
+      this.closeUploadModal();
+
+      this.loadContent();
+    },
+
+    error: (err) => {
+
+      console.error(err);
+
+      alert(
+        'Failed to upload content.'
+      );
     }
 
-    const formData =
-      new FormData();
+  });
 
-    formData.append(
-      'file',
-      this.selectedFile
-    );
-
-    formData.append(
-      'title',
-      this.uploadTitle
-    );
-
-    formData.append(
-      'subject',
-      this.uploadSubject
-    );
-
-    formData.append(
-      'description',
-      this.uploadDescription
-    );
-
-    formData.append(
-      'contentType',
-      this.uploadContentType
-    );
-
-    this.auth
-      .uploadTeacherContent(formData)
-      .subscribe({
-
-        next: () => {
-
-          alert(
-            'Content uploaded successfully!'
-          );
-
-          this.closeUploadModal();
-
-          this.loadContent();
-        },
-
-        error: (err) => {
-
-          console.error(err);
-
-          alert(
-            'Failed to upload content'
-          );
-
-        }
-
-      });
 
   }
 
   activateContent(id: number): void {
 
-    this.auth
-      .activateTeacherContent(id)
-      .subscribe({
 
-        next: () => {
+this.auth
+  .activateTeacherContent(id)
+  .subscribe({
 
-          this.loadContent();
-        }
+    next: () => {
 
-      });
+      this.loadContent();
+    },
+
+    error: (err) => {
+
+      console.error(err);
+    }
+
+  });
+
 
   }
 
   deactivateContent(id: number): void {
 
-    this.auth
-      .deactivateTeacherContent(id)
-      .subscribe({
 
-        next: () => {
+this.auth
+  .deactivateTeacherContent(id)
+  .subscribe({
 
-          this.loadContent();
-        }
+    next: () => {
 
-      });
+      this.loadContent();
+    },
+
+    error: (err) => {
+
+      console.error(err);
+    }
+
+  });
+
 
   }
 
   deleteContent(id: number): void {
 
-    if (
-      !confirm(
-        'Delete this content?'
-      )
-    ) return;
 
-    this.auth
-      .deleteTeacherContent(id)
-      .subscribe({
+const confirmed =
+  confirm(
+    'Delete this content?'
+  );
 
-        next: () => {
+if (!confirmed) {
 
-          this.loadContent();
-        }
+  return;
+}
 
-      });
+this.auth
+  .deleteTeacherContent(id)
+  .subscribe({
+
+    next: () => {
+
+      this.loadContent();
+    },
+
+    error: (err) => {
+
+      console.error(err);
+    }
+
+  });
+
 
   }
 
-  viewContent(url?: string): void {
+  viewContent(
+    url?: string
+  ): void {
 
-    if (!url) return;
+if (!url) {
 
-    window.open(
-      url,
-      '_blank'
-    );
+  return;
+}
+
+window.open(
+  url,
+  '_blank'
+);
+
+
   }
 
   trackById(
@@ -286,6 +358,9 @@ export class TeacherDashboard
     content: Content
   ): number {
 
-    return content.id;
+return content.id;
+
+
   }
+
 }

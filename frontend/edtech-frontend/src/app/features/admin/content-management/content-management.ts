@@ -1,6 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import {
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
+
 import { Auth } from '../../../core/services/auth';
 
 interface Content {
@@ -15,7 +21,12 @@ interface Content {
 @Component({
   selector: 'app-content-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './content-management.html',
   styleUrl: './content-management.css'
 })
@@ -23,16 +34,18 @@ export class ContentManagement implements OnInit {
 
   contents: Content[] = [];
   filteredContents: Content[] = [];
-  searchTerm: string = '';
-  loading: boolean = true;
 
-  // Upload Modal
+  searchTerm = '';
+  loading = true;
+
   showUploadModal = false;
+
   selectedFile: File | null = null;
+
   uploadTitle = '';
   uploadSubject = '';
   uploadDescription = '';
-  uploadContentType = 'VIDEO';
+  uploadContentType = 'PDF';
 
   constructor(
     private auth: Auth,
@@ -44,107 +57,174 @@ export class ContentManagement implements OnInit {
   }
 
   loadContent(): void {
+
     this.loading = true;
 
     this.auth.getAllContent().subscribe({
+
       next: (data: any) => {
-        console.log('✅ Content received:', data);
-        this.contents = Array.isArray(data) ? data : [];
-        this.filteredContents = [...this.contents];
+
+        this.contents =
+          Array.isArray(data)
+            ? data
+            : [];
+
+        this.filteredContents =
+          [...this.contents];
+
         this.loading = false;
+
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to load content:', err);
+
+      error: () => {
+
         this.loading = false;
       }
     });
   }
 
   filterContent(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    this.filteredContents = term
-      ? this.contents.filter(c => c.title.toLowerCase().includes(term))
-      : [...this.contents];
+
+    const term =
+      this.searchTerm
+        .toLowerCase()
+        .trim();
+
+    this.filteredContents =
+      term
+        ? this.contents.filter(content =>
+          content.title
+            .toLowerCase()
+            .includes(term))
+        : [...this.contents];
   }
 
-  openUploadModal() {
+  openUploadModal(): void {
+
     this.showUploadModal = true;
+
     this.selectedFile = null;
+
     this.uploadTitle = '';
     this.uploadSubject = '';
     this.uploadDescription = '';
   }
 
-  closeUploadModal() {
+  closeUploadModal(): void {
+
     this.showUploadModal = false;
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+  onFileSelected(event: any): void {
+
+    this.selectedFile =
+      event.target.files[0];
   }
 
   uploadContent(): void {
-    if (!this.selectedFile) return;
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    formData.append('title', this.uploadTitle);
-    formData.append('subject', this.uploadSubject);
-    formData.append('description', this.uploadDescription);
-    formData.append('contentType', this.uploadContentType);
+    if (!this.selectedFile) {
 
-    this.auth.uploadContent(formData).subscribe({
-      next: () => {
-        alert('Content uploaded successfully!');
-        this.closeUploadModal();
-        this.loadContent();
-      },
-      error: (err) => {
-        console.error(err);
-        alert('Failed to upload content');
-      }
-    });
+      return;
+    }
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      'file',
+      this.selectedFile
+    );
+
+    formData.append(
+      'title',
+      this.uploadTitle
+    );
+
+    formData.append(
+      'subject',
+      this.uploadSubject
+    );
+
+    formData.append(
+      'description',
+      this.uploadDescription
+    );
+
+    formData.append(
+      'contentType',
+      this.uploadContentType
+    );
+
+    this.auth
+      .uploadContent(formData)
+      .subscribe({
+
+        next: () => {
+
+          this.closeUploadModal();
+
+          this.loadContent();
+        }
+      });
   }
 
   activateContent(id: number): void {
-    this.auth.activateContent(id).subscribe({
-      next: () => this.loadContent(),
-      error: (err) => alert('Failed to activate')
-    });
+
+    this.auth
+      .activateContent(id)
+      .subscribe(() => {
+
+        this.loadContent();
+      });
   }
 
   deactivateContent(id: number): void {
-    this.auth.deactivateContent(id).subscribe({
-      next: () => this.loadContent(),
-      error: (err) => alert('Failed to deactivate')
-    });
+
+    this.auth
+      .deactivateContent(id)
+      .subscribe(() => {
+
+        this.loadContent();
+      });
   }
 
   deleteContent(id: number): void {
-    if (!confirm('Delete this content?')) return;
 
-    this.auth.deleteContent(id).subscribe({
-      next: () => this.loadContent(),
-      error: (err) => alert('Failed to delete')
-    });
-  }
-
-  trackById(index: number, content: Content): number {
-    return content.id;
-  }
-
-  viewContent(url?: string): void {
-
-    if (!url) {
-
+    if (
+      !confirm(
+        'Delete this content?'
+      )
+    ) {
       return;
-
     }
 
-    window.open(url, '_blank');
+    this.auth
+      .deleteContent(id)
+      .subscribe(() => {
+
+        this.loadContent();
+      });
+  }
+
+  viewContent(
+    url?: string
+  ): void {
+
+    if (!url) return;
+
+    window.open(
+      url,
+      '_blank'
+    );
+  }
+
+  trackById(
+    index: number,
+    content: Content
+  ): number {
+
+    return content.id;
   }
 }
-
-
-

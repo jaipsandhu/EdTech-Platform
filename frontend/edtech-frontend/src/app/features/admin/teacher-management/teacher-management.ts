@@ -1,6 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
+
 import { Auth } from '../../../core/services/auth';
 
 interface Teacher {
@@ -12,7 +17,12 @@ interface Teacher {
 @Component({
   selector: 'app-teacher-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './teacher-management.html',
   styleUrl: './teacher-management.css'
 })
@@ -20,14 +30,18 @@ export class TeacherManagement implements OnInit {
 
   teachers: Teacher[] = [];
   filteredTeachers: Teacher[] = [];
-  searchTerm: string = '';
-  loading: boolean = true;
-  errorMessage: string = '';
 
-  showEditModal: boolean = false;
+  searchTerm = '';
+
+  loading = true;
+  errorMessage = '';
+
+  showEditModal = false;
+
   selectedTeacher: Teacher | null = null;
-  editEmail: string = '';
-  editRole: string = '';
+
+  editEmail = '';
+  editRole = '';
 
   constructor(
     private auth: Auth,
@@ -39,89 +53,92 @@ export class TeacherManagement implements OnInit {
   }
 
   loadTeachers(): void {
-    this.loading = true;
-    this.errorMessage = '';
-
-    console.log('📤 Fetching teachers...');
 
     this.auth.getTeachers().subscribe({
-      next: (data: any) => {
-        console.log('✅ Teachers received:', data);
 
-        this.teachers = Array.isArray(data) ? data : [];
+      next: (data: any) => {
+
+        this.teachers = data || [];
         this.filteredTeachers = [...this.teachers];
+
         this.loading = false;
+
         this.cdr.detectChanges();
       },
-      error: (err: any) => {
-        console.error('❌ Failed to load teachers:', err);
-        this.errorMessage = 'Failed to load teachers. Please check console.';
+
+      error: () => {
+
         this.loading = false;
+        this.errorMessage = 'Failed to load teachers';
+
         this.cdr.detectChanges();
       }
     });
   }
 
   filterTeachers(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    if (!term) {
-      this.filteredTeachers = [...this.teachers];
-    } else {
-      this.filteredTeachers = this.teachers.filter(teacher =>
-        teacher.email.toLowerCase().includes(term)
+
+    const term =
+      this.searchTerm
+        .toLowerCase()
+        .trim();
+
+    this.filteredTeachers =
+      this.teachers.filter(t =>
+        t.email.toLowerCase().includes(term)
       );
-    }
   }
 
   editTeacher(teacher: Teacher): void {
-    this.selectedTeacher = { ...teacher };
+
+    this.selectedTeacher = teacher;
+
     this.editEmail = teacher.email;
-    this.editRole = teacher.role || 'TEACHER';
+    this.editRole = teacher.role;
+
     this.showEditModal = true;
   }
 
   saveEdit(): void {
+
     if (!this.selectedTeacher) return;
 
-    const payload = {
-      email: this.editEmail,
-      role: this.editRole
-    };
+    this.auth.updateTeacher(
+      this.selectedTeacher.id,
+      {
+        email: this.editEmail,
+        role: this.editRole
+      }
+    ).subscribe({
 
-    this.auth.updateTeacher(this.selectedTeacher.id, payload).subscribe({
       next: () => {
-        console.log('✅ Teacher updated');
-        this.loadTeachers();   // Refresh list
+
         this.closeModal();
-      },
-      error: (err) => {
-        console.error('Update failed:', err);
-        alert('Failed to update teacher');
+
+        this.loadTeachers();
       }
     });
   }
 
   deleteTeacher(id: number): void {
-    if (!confirm('Are you sure you want to delete this teacher?')) return;
 
-    this.auth.deleteTeacher(id).subscribe({
-      next: () => {
-        console.log('✅ Teacher deleted');
-        this.loadTeachers();   // Refresh list
-      },
-      error: (err) => {
-        console.error('Delete failed:', err);
-        alert('Failed to delete teacher');
-      }
-    });
+    this.auth.deleteTeacher(id)
+      .subscribe(() => {
+
+        this.loadTeachers();
+      });
   }
 
   closeModal(): void {
+
     this.showEditModal = false;
-    this.selectedTeacher = null;
   }
 
-  trackById(index: number, teacher: Teacher): number {
+  trackById(
+    index: number,
+    teacher: Teacher
+  ): number {
+
     return teacher.id;
   }
 }

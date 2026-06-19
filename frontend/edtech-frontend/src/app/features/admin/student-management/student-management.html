@@ -8,29 +8,33 @@
 
     <div class="nav-menu">
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin"
+        class="nav-item">
         Dashboard
-      </button>
+      </a>
 
-      <button class="nav-item active">
+      <a
+        routerLink="/admin/students"
+        class="nav-item active">
         Students
-      </button>
+      </a>
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin/teachers"
+        class="nav-item">
         Teachers
-      </button>
+      </a>
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin/content"
+        class="nav-item">
         Content
-      </button>
+      </a>
 
     </div>
 
     <div class="nav-actions">
-
-      <span class="lang">
-        IN
-      </span>
 
       <button class="contact-btn">
         Admin
@@ -40,32 +44,17 @@
 
   </nav>
 
-  <section class="hero">
+  <section class="management-header">
 
-    <div class="hero-left">
-
-      <span class="section-tag">
-        Student Management
-      </span>
+    <div class="header-left">
 
       <h1>
-        Together, We
-        <span class="accent">
-          Manage
-        </span>
-        Student
-        Success
+        Student Management
       </h1>
-
-      <p>
-        Organize learners, manage access,
-        and maintain educational records
-        through one centralized platform.
-      </p>
 
     </div>
 
-    <div class="hero-right">
+    <div class="header-right">
 
       <input
         type="text"
@@ -78,9 +67,7 @@
 
         <span>Total Students</span>
 
-        <h3>
-          {{ students.length }}
-        </h3>
+        <h3>{{ students.length }}</h3>
 
       </div>
 
@@ -106,10 +93,7 @@
 
     <div
       class="student-row"
-      *ngFor="
-      let student of filteredStudents;
-      trackBy: trackById
-    ">
+      *ngFor="let student of filteredStudents; trackBy: trackById">
 
       <div>
 
@@ -132,7 +116,7 @@
       <div class="actions">
 
         <button
-          class="action-btn"
+          class="edit-btn"
           (click)="editStudent(student)">
           Edit
         </button>
@@ -167,60 +151,48 @@
 
   <!-- EDIT MODAL -->
 
-  <div
-    *ngIf="showEditModal"
-    class="modal"
-    (click)="closeModal()">
+  <div class="modal-overlay" *ngIf="showEditModal">
 
-    <div
-      class="modal-card"
-      (click)="$event.stopPropagation()">
+    <div class="edit-modal">
 
-      <span class="section-tag">
-        Edit Student
-      </span>
+      <h2>Edit Student</h2>
 
-      <h2>
-        Update
-        <span class="accent">
-          Student
-        </span>
-      </h2>
+      <div class="form-group">
+        <label>Email</label>
 
-      <input
-        type="email"
-        [(ngModel)]="editEmail"
-        placeholder="Email">
+        <input
+          type="email"
+          [(ngModel)]="editEmail">
+      </div>
 
-      <select
-        [(ngModel)]="editRole">
+      <div class="form-group">
+        <label>Role</label>
 
-        <option value="STUDENT">
-          Student
-        </option>
+        <select [(ngModel)]="editRole">
 
-        <option value="TEACHER">
-          Teacher
-        </option>
+          <option value="STUDENT">
+            STUDENT
+          </option>
 
-      </select>
+          <option value="TEACHER">
+            TEACHER
+          </option>
+
+        </select>
+      </div>
 
       <div class="modal-actions">
 
         <button
-          class="secondary-btn"
+          class="cancel-btn"
           (click)="closeModal()">
-
           Cancel
-
         </button>
 
         <button
-          class="primary-btn"
+          class="save-btn"
           (click)="saveEdit()">
-
-          Save
-
+          Save Changes
         </button>
 
       </div>
@@ -228,5 +200,11 @@
     </div>
 
   </div>
+
+
+
+
+
+
 
 </div>

@@ -26,44 +26,26 @@
 
     </div>
 
-    <div class="nav-actions">
-
-      <span class="lang">
-        IN
-      </span>
-
-      <button class="contact-btn">
-        Student
-      </button>
-
-    </div>
+    <button class="contact-btn">
+      Student
+    </button>
 
   </nav>
 
-  <section class="hero">
+  <section class="dashboard-header">
 
-    <div class="hero-left">
+    <div class="dashboard-left">
 
-      <span class="section-tag">
-        Learning Dashboard
-      </span>
-
-      <h1>
-        Together, We
-        <span class="accent">
-          Learn
-        </span>
-        Smarter
-      </h1>
-
-      <p>
-        Access educational resources, take notes,
-        and collaborate with your AI learning assistant.
-      </p>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search content..."
+        [(ngModel)]="searchTerm"
+        (input)="filterContents()">
 
     </div>
 
-    <div class="hero-right">
+    <div class="dashboard-right">
 
       <div class="stats-card">
 
@@ -85,13 +67,6 @@
 
     <section class="content-section">
 
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Search content..."
-        [(ngModel)]="searchTerm"
-        (input)="filterContents()">
-
       <div
         *ngIf="!loading"
         class="content-list">
@@ -99,9 +74,9 @@
         <div
           class="content-card"
           *ngFor="
-          let content of filteredContents;
-          trackBy: trackById
-        ">
+            let content of filteredContents;
+            trackBy: trackById
+          ">
 
           <div>
 

@@ -8,63 +8,54 @@
 
     <div class="nav-menu">
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact:true}"
+        class="nav-item">
         Dashboard
-      </button>
+      </a>
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin/students"
+        routerLinkActive="active"
+        class="nav-item">
         Students
-      </button>
+      </a>
 
-      <button class="nav-item active">
+      <a
+        routerLink="/admin/teachers"
+        routerLinkActive="active"
+        class="nav-item">
         Teachers
-      </button>
+      </a>
 
-      <button class="nav-item">
+      <a
+        routerLink="/admin/content"
+        routerLinkActive="active"
+        class="nav-item">
         Content
-      </button>
+      </a>
 
     </div>
 
-    <div class="nav-actions">
-
-      <span class="lang">
-        IN
-      </span>
-
-      <button class="contact-btn">
-        Admin
-      </button>
-
-    </div>
+    <button class="contact-btn">
+      Admin
+    </button>
 
   </nav>
 
-  <section class="hero">
+  <section class="management-header">
 
-    <div class="hero-left">
-
-      <span class="section-tag">
-        Teacher Management
-      </span>
+    <div class="header-left">
 
       <h1>
-        Together, We
-        <span class="accent">
-          Empower
-        </span>
-        Educators
+        Teacher Management
       </h1>
-
-      <p>
-        Manage instructors, teaching access,
-        and academic responsibilities through
-        a centralized administration platform.
-      </p>
 
     </div>
 
-    <div class="hero-right">
+    <div class="header-right">
 
       <input
         type="text"
@@ -78,7 +69,7 @@
         <span>Total Teachers</span>
 
         <h3>
-          {{ teachers.length }}
+          {{ filteredTeachers.length }}
         </h3>
 
       </div>
@@ -105,10 +96,7 @@
 
     <div
       class="teacher-row"
-      *ngFor="
-      let teacher of filteredTeachers;
-      trackBy: trackById
-    ">
+      *ngFor="let teacher of filteredTeachers; trackBy: trackById">
 
       <div>
 
@@ -123,15 +111,13 @@
       </div>
 
       <div class="role">
-
         {{ teacher.role }}
-
       </div>
 
       <div class="actions">
 
         <button
-          class="action-btn"
+          class="edit-btn"
           (click)="editTeacher(teacher)">
           Edit
         </button>
@@ -166,46 +152,47 @@
 
   <div
     *ngIf="showEditModal"
-    class="modal"
+    class="modal-overlay"
     (click)="closeModal()">
 
     <div
-      class="modal-card"
+      class="edit-modal"
       (click)="$event.stopPropagation()">
 
-      <span class="section-tag">
-        Edit Teacher
-      </span>
+      <h2>Edit Teacher</h2>
 
-      <h2>
-        Update
-        <span class="accent">
-          Teacher
-        </span>
-      </h2>
+      <div class="form-group">
 
-      <input
-        type="email"
-        [(ngModel)]="editEmail"
-        placeholder="Email">
+        <label>Email</label>
 
-      <select
-        [(ngModel)]="editRole">
+        <input
+          type="email"
+          [(ngModel)]="editEmail">
 
-        <option value="TEACHER">
-          Teacher
-        </option>
+      </div>
 
-        <option value="STUDENT">
-          Student
-        </option>
+      <div class="form-group">
 
-      </select>
+        <label>Role</label>
+
+        <select [(ngModel)]="editRole">
+
+          <option value="TEACHER">
+            TEACHER
+          </option>
+
+          <option value="STUDENT">
+            STUDENT
+          </option>
+
+        </select>
+
+      </div>
 
       <div class="modal-actions">
 
         <button
-          class="secondary-btn"
+          class="cancel-btn"
           (click)="closeModal()">
 
           Cancel
@@ -213,10 +200,10 @@
         </button>
 
         <button
-          class="primary-btn"
+          class="save-btn"
           (click)="saveEdit()">
 
-          Save
+          Save Changes
 
         </button>
 
