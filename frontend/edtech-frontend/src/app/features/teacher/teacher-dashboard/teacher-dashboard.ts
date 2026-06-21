@@ -366,4 +366,24 @@ return content.id;
 
   }
 
+  logout(): void {
+
+    const confirmed =
+      confirm(
+        'Are you sure you want to logout?'
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.auth.logout();
+
+    this.router.navigate(
+      ['/signin']
+    );
+  }
+
+
+
 }

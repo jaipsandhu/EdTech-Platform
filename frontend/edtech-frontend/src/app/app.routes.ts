@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
 
 import { Landing } from './features/landing/landing/landing';
 
@@ -13,6 +14,7 @@ import { ContentManagement } from './features/admin/content-management/content-m
 
 import { TeacherDashboard } from './features/teacher/teacher-dashboard/teacher-dashboard';
 import { StudentDashboard } from './features/student/student-dashboard/student-dashboard';
+
 
 export const routes: Routes = [
 
@@ -41,34 +43,40 @@ export const routes: Routes = [
   // Admin
   {
     path: 'admin',
-    component: AdminDashboard
+    component: AdminDashboard,
+    canActivate: [authGuard]
   },
 
   {
     path: 'admin/students',
-    component: StudentManagement
+    component: StudentManagement,
+    canActivate: [authGuard]
   },
 
   {
     path: 'admin/teachers',
-    component: TeacherManagement
+    component: TeacherManagement,
+    canActivate: [authGuard]
   },
 
   {
     path: 'admin/content',
-    component: ContentManagement
+    component: ContentManagement,
+    canActivate: [authGuard]
   },
 
   // Teacher
   {
     path: 'teacher',
-    component: TeacherDashboard
+    component: TeacherDashboard,
+    canActivate: [authGuard]
   },
 
   // Student
   {
     path: 'student',
-    component: StudentDashboard
+    component: StudentDashboard,
+    canActivate: [authGuard]
   },
 
   // Fallback

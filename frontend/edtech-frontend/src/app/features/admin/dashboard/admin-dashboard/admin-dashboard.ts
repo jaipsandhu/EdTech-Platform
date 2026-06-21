@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
+import { Auth } from '../../../../core/services/auth';
+
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,7 +19,10 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class AdminDashboard implements OnInit {
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private auth: Auth
+  ) {}
 
   ngOnInit(): void {}
 
@@ -31,5 +40,22 @@ export class AdminDashboard implements OnInit {
 
   goToContent() {
     this.router.navigate(['/admin/content']);
+  }
+
+  logout(): void {
+
+    const confirmed = confirm(
+      'Are you sure you want to logout?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.auth.logout();
+
+    this.router.navigate(
+      ['/signin']
+    );
   }
 }

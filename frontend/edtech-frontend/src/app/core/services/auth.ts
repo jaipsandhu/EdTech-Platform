@@ -462,4 +462,10 @@ export class Auth {
     });
   }
 
+
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+  }
+
 }

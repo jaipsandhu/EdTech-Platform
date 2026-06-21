@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
 import { timeout } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 interface Content {
   id: number;
@@ -56,8 +57,27 @@ export class StudentDashboard implements OnInit {
 
   constructor(
     private auth: Auth,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
+
+  logout(): void {
+
+    const confirmed =
+      confirm(
+        'Are you sure you want to logout?'
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.auth.logout();
+
+    this.router.navigate(
+      ['/signin']
+    );
+  }
 
   ngOnInit(): void {
     this.loadContents();

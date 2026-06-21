@@ -1,10 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+
 
 import { Auth } from '../../../core/services/auth';
-
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
 interface Student {
   id: number;
   email: string;
@@ -39,7 +43,8 @@ export class StudentManagement implements OnInit {
 
   constructor(
     private auth: Auth,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -194,5 +199,22 @@ export class StudentManagement implements OnInit {
   ): number {
 
     return student.id;
+  }
+
+  logout(): void {
+
+    const confirmed = confirm(
+      'Are you sure you want to logout?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.auth.logout();
+
+    this.router.navigate(
+      ['/signin']
+    );
   }
 }

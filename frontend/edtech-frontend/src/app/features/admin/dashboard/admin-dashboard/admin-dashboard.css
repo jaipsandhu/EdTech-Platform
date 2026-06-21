@@ -297,3 +297,22 @@
 
   color: #8a7045;
 }
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn {
+  border: none;
+  background: #e74c3c;
+  color: white;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
