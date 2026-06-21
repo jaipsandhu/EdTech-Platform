@@ -12,6 +12,35 @@
 /* =========================
 NAVBAR
 ========================= */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logout-btn {
+
+  border: none;
+
+  background: #e74c3c;
+
+  color: white;
+
+  padding: 16px 28px;
+
+  border-radius: 999px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all .25s ease;
+}
+
+.logout-btn:hover {
+
+  background: #c0392b;
+}
 
 .navbar {
   max-width: 1600px;

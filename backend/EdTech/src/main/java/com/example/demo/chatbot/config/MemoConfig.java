@@ -47,7 +47,7 @@ public class MemoConfig {
                 .port(5432)
                 .database("edtech")
                 .user("postgres")
-                .password("postgres")
+                .password("admin123")
                 .table("my_embeddings")
                 .dimension(768)
                 .createTable(true)

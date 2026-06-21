@@ -4,6 +4,8 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -62,7 +64,8 @@ export class TeacherDashboard implements OnInit {
 
   constructor(
     private auth: Auth,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
