@@ -53,6 +53,8 @@ public class S3Service {
                                 file.getContentType()
                         )
 
+                        .contentDisposition("inline")
+
                         .build();
 
 

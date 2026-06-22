@@ -33,6 +33,15 @@ public class StudentController {
         return contentService.getActiveContent();
     }
 
+    @GetMapping("/content/{id}")
+    public ContentResponseDTO getContentById(
+            @PathVariable Long id
+    ) {
+
+        return contentService
+                .getContentById(id);
+    }
+
 
     @PostMapping("/notes")
     public void createNote(
@@ -87,6 +96,8 @@ public class StudentController {
 
         notesService.deleteNote(id);
     }
+
+
 
 
 

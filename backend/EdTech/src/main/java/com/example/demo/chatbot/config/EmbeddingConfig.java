@@ -29,8 +29,8 @@ public class EmbeddingConfig {
         return EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore)
                 .embeddingModel(embeddingModel)
-                .maxResults(3)
-                .minScore(0.6)  // only inject context if similarity is high enough
+                .maxResults(5)
+                .minScore(0.75)
                 .build();
     }
 }

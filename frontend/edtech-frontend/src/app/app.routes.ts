@@ -15,6 +15,8 @@ import { ContentManagement } from './features/admin/content-management/content-m
 import { TeacherDashboard } from './features/teacher/teacher-dashboard/teacher-dashboard';
 import { StudentDashboard } from './features/student/student-dashboard/student-dashboard';
 
+import { ContentViewer }
+  from './features/student/content-viewer/content-viewer';
 
 export const routes: Routes = [
 
@@ -79,10 +81,17 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  {
+    path: 'student/content/:id',
+    component: ContentViewer
+  },
+
   // Fallback
   {
     path: '**',
     redirectTo: ''
   },
+
+
 
 ];

@@ -467,5 +467,13 @@ export class Auth {
     localStorage.removeItem('token');
     localStorage.removeItem('email');
   }
+  getContentById(id: number) {
+    return this.http.get(
+      `http://localhost:8080/student/content/${id}`,
+      this.getAuthHeaders()
+    );
+
+
+  }
 
 }

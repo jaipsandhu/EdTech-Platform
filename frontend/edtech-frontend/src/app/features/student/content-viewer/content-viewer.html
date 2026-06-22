@@ -1,0 +1,120 @@
+<div class="content-viewer">
+
+  <!-- HEADER -->
+  <div class="viewer-header">
+
+    <button class="back-btn" (click)="goBack()">
+      ← Back
+    </button>
+
+    <h1 class="viewer-title">{{ content?.title }}</h1>
+
+  </div>
+
+  <!-- BODY: PDF + optional side panels -->
+  <div class="viewer-body" [class.has-notes]="showNotes" [class.has-ai]="showAiPanel" [class.has-both]="showNotes && showAiPanel">
+
+    <!-- PDF -->
+    <div class="pdf-area">
+      <iframe
+        *ngIf="safeUrl"
+        [src]="safeUrl"
+        frameborder="0">
+      </iframe>
+      <div *ngIf="!safeUrl" class="pdf-loading">
+        Loading document...
+      </div>
+    </div>
+
+    <!-- NOTES PANEL -->
+    <div class="side-panel notes-panel" *ngIf="showNotes">
+
+      <div class="panel-header">
+        <span class="panel-tag">Notes</span>
+        <button class="close-btn" (click)="toggleNotes()">✕</button>
+      </div>
+
+      <div class="note-form">
+        <input
+          type="text"
+          class="panel-input"
+          placeholder="Note title"
+          [(ngModel)]="newNoteTitle" />
+        <textarea
+          class="panel-textarea"
+          rows="4"
+          placeholder="Write your note..."
+          [(ngModel)]="newNoteContent">
+        </textarea>
+        <button class="save-btn" (click)="saveNote()">
+          Save Note
+        </button>
+      </div>
+
+      <div class="notes-list">
+        <div class="note-item" *ngFor="let note of notes">
+          <h4 class="note-title">{{ note.title }}</h4>
+          <p class="note-body">{{ note.content }}</p>
+          <button class="del-btn" (click)="deleteNote(note.id)">Delete</button>
+        </div>
+        <p class="empty-msg" *ngIf="notes.length === 0">No notes yet.</p>
+      </div>
+
+    </div>
+
+    <!-- AI PANEL -->
+    <div class="side-panel ai-panel" *ngIf="showAiPanel">
+
+      <div class="panel-header">
+        <span class="panel-tag">AI Assistant</span>
+        <button class="close-btn" (click)="toggleAi()">✕</button>
+      </div>
+
+      <div class="chat-messages" #chatContainer>
+        <div
+          *ngFor="let msg of messages"
+          class="chat-bubble"
+          [class.user-bubble]="msg.isUser">
+          {{ msg.text }}
+        </div>
+        <div *ngIf="isChatLoading" class="chat-bubble typing">
+          Thinking...
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input
+          type="text"
+          class="chat-input"
+          placeholder="Ask a question..."
+          [(ngModel)]="chatInput"
+          (keyup.enter)="sendMessage()" />
+        <button class="send-btn" (click)="sendMessage()">Send</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FLOATING ACTION BUTTONS -->
+  <div class="fab-group">
+
+    <button
+      class="fab"
+      [class.fab-active]="showNotes"
+      (click)="toggleNotes()"
+      title="Notes">
+      Notes
+    </button>
+
+    <button
+      class="fab fab-ai"
+      [class.fab-active]="showAiPanel"
+      (click)="toggleAi()"
+      title="AI Assistant">
+      AI
+    </button>
+
+  </div>
+
+</div>

@@ -82,6 +82,12 @@ public class RagService {
         }
     }
 
+    public void clearAll() {
+        log.info("Clearing all embeddings ...");
+        embeddingStore.removeAll();
+        log.info("Embeddings cleared");
+    }
+
     public Resource saveDocument(
             MultipartFile file
     ) {

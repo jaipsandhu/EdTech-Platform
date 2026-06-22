@@ -203,4 +203,40 @@ public class ContentService {
 
         contentRepository.delete(content);
     }
+
+    public ContentResponseDTO getContentById(Long id) {
+
+        Content content =
+
+                contentRepository
+                        .findById(id)
+                        .orElseThrow();
+
+        ContentResponseDTO dto =
+                new ContentResponseDTO();
+
+        dto.setId(content.getId());
+
+        dto.setTitle(
+                content.getTitle()
+        );
+
+        dto.setUploadedBy(
+                content.getUploadedBy()
+        );
+
+        dto.setFileUrl(
+                content.getFileUrl()
+        );
+
+        dto.setContentType(
+                content.getContentType()
+        );
+
+        dto.setActive(
+                content.isActive()
+        );
+
+        return dto;
+    }
 }

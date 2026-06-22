@@ -107,7 +107,12 @@ export class StudentDashboard implements OnInit {
   }
 
   viewContent(content: Content): void {
-    window.open(content.fileUrl, '_blank');
+
+    this.router.navigate([
+      '/student/content',
+      content.id
+    ]);
+
   }
 
   openNotes(content: Content): void {
