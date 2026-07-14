@@ -25,10 +25,7 @@ public class ChatController {
         this.ragService = ragService;
     }
 
-    @GetMapping
-    public Flux<String> rag(@RequestParam(defaultValue = "Hello") String message) {
-        return chatOrchestrationService.chat(message);
-    }
+    @GetMapping public Flux<String> rag(@RequestParam(defaultValue = "Hello") String message) { return chatOrchestrationService.chat(message); }
 
     @PostMapping("/load")
     public Flux<String> load(@RequestParam(defaultValue = "What is the content of the document?") String message,

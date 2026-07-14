@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import jakarta.servlet.DispatcherType;
 import java.util.List;
 
 @Configuration
@@ -54,20 +54,26 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .securityContext(context ->
+                        context.requireExplicitSave(false)
+                )
 
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - Chat must be fully open
+
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+
                         .requestMatchers(
                                 "/home/**",
                                 "/auth/**",
-                                "/chat/**",           // Keep this
                                 "/error",
-                                "/actuator/**"        // optional
+                                "/healthcheck"
                         ).permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/chat/**").authenticated()
 
                         .anyRequest().authenticated()
                 )
