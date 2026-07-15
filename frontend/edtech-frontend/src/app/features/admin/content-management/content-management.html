@@ -193,14 +193,11 @@
 
   </section>
 
-  <div
-    *ngIf="loading"
-    class="loading">
-
+  <div *ngIf="loading" class="loading">
     Loading Content...
-
   </div>
 
+  <!-- ====================== MODAL ====================== -->
   <div
     *ngIf="showUploadModal"
     class="modal-overlay">
@@ -257,10 +254,15 @@
 
       </div>
 
+      <!-- ==== FILE INPUT WITH DYNAMIC ACCEPT ==== -->
       <div class="form-group">
 
+        <label>Select File</label>
+
+        <!-- The accept attribute will be updated every time the content‑type selector changes -->
         <input
           type="file"
+          #fileInput
           (change)="onFileSelected($event)">
 
       </div>
