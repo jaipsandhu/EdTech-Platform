@@ -2,12 +2,12 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 import {
   Router,
   RouterLink,
   RouterLinkActive
 } from '@angular/router';
+
 import { Auth } from '../../../core/services/auth';
 
 interface Content {
@@ -48,6 +48,9 @@ export class ContentManagement implements OnInit {
   uploadDescription = '';
   uploadContentType = 'PDF';
 
+  // NEW
+  fileAccept = '.pdf';
+
   constructor(
     private auth: Auth,
     private cdr: ChangeDetectorRef,
@@ -71,8 +74,7 @@ export class ContentManagement implements OnInit {
             ? data
             : [];
 
-        this.filteredContents =
-          [...this.contents];
+        this.filteredContents = [...this.contents];
 
         this.loading = false;
 
@@ -83,7 +85,9 @@ export class ContentManagement implements OnInit {
 
         this.loading = false;
       }
+
     });
+
   }
 
   filterContent(): void {
@@ -100,6 +104,7 @@ export class ContentManagement implements OnInit {
             .toLowerCase()
             .includes(term))
         : [...this.contents];
+
   }
 
   openUploadModal(): void {
@@ -111,17 +116,106 @@ export class ContentManagement implements OnInit {
     this.uploadTitle = '';
     this.uploadSubject = '';
     this.uploadDescription = '';
+
+    this.uploadContentType = 'PDF';
+
+    this.updateFileAccept();
+
   }
 
   closeUploadModal(): void {
 
     this.showUploadModal = false;
+
+  }
+
+  // NEW
+  onContentTypeChange(): void {
+
+    this.selectedFile = null;
+
+    this.updateFileAccept();
+
+  }
+
+  // NEW
+  updateFileAccept(): void {
+
+    switch (this.uploadContentType) {
+
+      case 'PDF':
+        this.fileAccept = '.pdf';
+        break;
+
+      case 'VIDEO':
+        this.fileAccept = 'video/*';
+        break;
+
+      case 'DOCUMENT':
+        this.fileAccept = '.doc,.docx,.txt';
+        break;
+
+      default:
+        this.fileAccept = '';
+    }
+
   }
 
   onFileSelected(event: any): void {
 
-    this.selectedFile =
-      event.target.files[0];
+    const file = event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    let valid = false;
+
+    switch (this.uploadContentType) {
+
+      case 'PDF':
+
+        valid =
+          file.name.toLowerCase().endsWith('.pdf');
+
+        break;
+
+      case 'VIDEO':
+
+        valid =
+          file.type.startsWith('video/');
+
+        break;
+
+      case 'DOCUMENT':
+
+        valid =
+          file.name.toLowerCase().endsWith('.doc') ||
+          file.name.toLowerCase().endsWith('.docx') ||
+          file.name.toLowerCase().endsWith('.txt');
+
+        break;
+
+    }
+
+    if (!valid) {
+
+      alert(
+        'Please select a valid ' +
+        this.uploadContentType +
+        ' file.'
+      );
+
+      event.target.value = '';
+
+      this.selectedFile = null;
+
+      return;
+
+    }
+
+    this.selectedFile = file;
+
   }
 
   uploadContent(): void {
@@ -129,6 +223,7 @@ export class ContentManagement implements OnInit {
     if (!this.selectedFile) {
 
       return;
+
     }
 
     const formData =
@@ -168,8 +263,11 @@ export class ContentManagement implements OnInit {
           this.closeUploadModal();
 
           this.loadContent();
+
         }
+
       });
+
   }
 
   activateContent(id: number): void {
@@ -179,7 +277,9 @@ export class ContentManagement implements OnInit {
       .subscribe(() => {
 
         this.loadContent();
+
       });
+
   }
 
   deactivateContent(id: number): void {
@@ -189,17 +289,17 @@ export class ContentManagement implements OnInit {
       .subscribe(() => {
 
         this.loadContent();
+
       });
+
   }
 
   deleteContent(id: number): void {
 
-    if (
-      !confirm(
-        'Delete this content?'
-      )
-    ) {
+    if (!confirm('Delete this content?')) {
+
       return;
+
     }
 
     this.auth
@@ -207,19 +307,24 @@ export class ContentManagement implements OnInit {
       .subscribe(() => {
 
         this.loadContent();
+
       });
+
   }
 
-  viewContent(
-    url?: string
-  ): void {
+  viewContent(url?: string): void {
 
-    if (!url) return;
+    if (!url) {
+
+      return;
+
+    }
 
     window.open(
       url,
       '_blank'
     );
+
   }
 
   trackById(
@@ -228,16 +333,20 @@ export class ContentManagement implements OnInit {
   ): number {
 
     return content.id;
+
   }
 
   logout(): void {
 
-    const confirmed = confirm(
-      'Are you sure you want to logout?'
-    );
+    const confirmed =
+      confirm(
+        'Are you sure you want to logout?'
+      );
 
     if (!confirmed) {
+
       return;
+
     }
 
     this.auth.logout();
@@ -245,5 +354,7 @@ export class ContentManagement implements OnInit {
     this.router.navigate(
       ['/signin']
     );
+
   }
+
 }

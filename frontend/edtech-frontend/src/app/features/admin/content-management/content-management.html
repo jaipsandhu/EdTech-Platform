@@ -60,6 +60,7 @@
         Logout
 
       </button>
+
     </div>
 
   </nav>
@@ -193,11 +194,14 @@
 
   </section>
 
-  <div *ngIf="loading" class="loading">
+  <div
+    *ngIf="loading"
+    class="loading">
+
     Loading Content...
+
   </div>
 
-  <!-- ====================== MODAL ====================== -->
   <div
     *ngIf="showUploadModal"
     class="modal-overlay">
@@ -244,7 +248,8 @@
         <label>Content Type</label>
 
         <select
-          [(ngModel)]="uploadContentType">
+          [(ngModel)]="uploadContentType"
+          (change)="onContentTypeChange()">
 
           <option value="VIDEO">VIDEO</option>
           <option value="PDF">PDF</option>
@@ -254,15 +259,11 @@
 
       </div>
 
-      <!-- ==== FILE INPUT WITH DYNAMIC ACCEPT ==== -->
       <div class="form-group">
 
-        <label>Select File</label>
-
-        <!-- The accept attribute will be updated every time the content‑type selector changes -->
         <input
           type="file"
-          #fileInput
+          [accept]="fileAccept"
           (change)="onFileSelected($event)">
 
       </div>
