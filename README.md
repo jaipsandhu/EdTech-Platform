@@ -113,9 +113,9 @@ Add an `application.properties` (or environment variables) under `backend/EdTech
 
 ```properties
 # Database
-spring.datasource.url=jdbc:postgresql://localhost:5432/edtech
+spring.datasource.url=jdbc:postgresql://localhost:5432/
 spring.datasource.username=postgres
-spring.datasource.password=admin123
+spring.datasource.password=*******
 spring.jpa.hibernate.ddl-auto=update
 
 # JWT
